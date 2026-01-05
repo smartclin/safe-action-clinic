@@ -1,0 +1,44 @@
+{
+    "[javascript][typescript][javascriptreact][typescriptreact][json][jsonc][css][graphql]": {
+        "editor.defaultFormatter": "biomejs.biome"
+    },
+    "[jsonc]": {
+        "editor.defaultFormatter": "biomejs.biome"
+    },
+    "[yaml]": {
+        "editor.defaultFormatter": "redhat.vscode-yaml",
+        "editor.tabSize": 4
+    },
+    "[prisma]": {
+        "editor.defaultFormatter": "Prisma.prisma",
+        "editor.codeActionsOnSave": {
+            "source.fixAll.biome": "explicit"
+        }
+    },
+    "github.copilot.chat.commitMessageGeneration.instructions": [
+        {
+            "file": "docs/Prisma.md"
+        }
+    ],
+    "editor.codeActionsOnSave": {
+        "source.removeUnused.ts": "explicit",
+        "source.addMissingImports.ts": "explicit",
+        "source.fixAll.biome": "explicit",
+        "source.organizeImports.biome": "explicit"
+    },
+    "editor.formatOnPaste": false,
+    "editor.formatOnSave": true,
+    "files.associations": {
+        "*.css": "tailwindcss"
+    },
+    "typescript.enablePromptUseWorkspaceTsdk": true,
+    "typescript.preferences.autoImportFileExcludePatterns": [
+        "lucide-react",
+        "next/router",
+        "next/dist",
+        "@radix-ui/react-*"
+    ],
+
+    "typescript.preferences.importModuleSpecifier": "non-relative",
+    "typescript.tsdk": "node_modules/typescript/lib"
+}
