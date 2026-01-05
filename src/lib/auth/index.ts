@@ -12,10 +12,15 @@ export const auth = betterAuth({
         provider: 'postgresql' // or "mysql", "postgresql", ...etc
     }),
     experimental: { joins: true },
+    trustedOrigins: [
+        'http://localhost:3000', // keep old port for consistency
+        'http://localhost:3001' // add your current dev port
+    ],
 
     emailAndPassword: {
         enabled: true
     },
+    baseURL: process.env.NEXT_PUBLIC_APP_URL,
     advanced: {
         database: {
             generateId: () => generateId(),

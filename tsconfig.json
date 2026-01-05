@@ -8,7 +8,9 @@
      "checkJs": false,
       "noUncheckedIndexedAccess": true,
    "forceConsistentCasingInFileNames": true,
-  
+  "inlineSources": true,
+  "sourceMap": true,
+  "sourceRoot": "./",
     "noEmit": true,
     "esModuleInterop": true,
     "module": "esnext",

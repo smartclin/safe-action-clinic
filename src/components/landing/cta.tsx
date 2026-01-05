@@ -108,9 +108,9 @@ export function CTA() {
                             className='w-full border-0 bg-linear-to-r from-sky-500 to-emerald-500 text-base text-white shadow-lg shadow-sky-400/25 hover:from-sky-600 hover:to-emerald-600 sm:w-auto'
                             size='lg'
                         >
-                            <Link href='/register'>
-                                <Calendar className='mr-2 h-5 w-5' />
-                                Book Appointment
+                            <Link href='/login'>
+                                <Shield className='mr-2 h-5 w-5' />
+                                Access Doctor Portal
                                 <ArrowRight className='ml-2 h-4 w-4' />
                             </Link>
                         </Button>
@@ -120,9 +120,9 @@ export function CTA() {
                             size='lg'
                             variant='outline'
                         >
-                            <Link href='#testimonials'>
-                                <Heart className='mr-2 h-5 w-5' />
-                                Hear from Parents
+                            <Link href='/register'>
+                                <Calendar className='mr-2 h-5 w-5' />
+                                Patient Registration
                             </Link>
                         </Button>
                     </div>

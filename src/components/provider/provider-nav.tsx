@@ -23,18 +23,18 @@ export const providerNavSections: NavSection[] = [
         items: [
             {
                 title: 'Dashboard',
-                href: '/provider/dashboard',
+                href: '/admin/dashboard',
                 icon: LayoutDashboard
             },
             {
                 title: 'Pull Requests',
-                href: '/provider/dashboard/pulls',
+                href: '/dashboard/pulls',
                 icon: GitPullRequest,
                 badge: 3
             },
             {
                 title: 'Issues',
-                href: '/provider/dashboard/issues',
+                href: '/dashboard/issues',
                 icon: Bug,
                 badge: 2
             }
@@ -45,17 +45,17 @@ export const providerNavSections: NavSection[] = [
         items: [
             {
                 title: 'Components',
-                href: '/provider/dashboard/components',
+                href: '/dashboard/components',
                 icon: Code2
             },
             {
                 title: 'Packages',
-                href: '/provider/dashboard/packages',
+                href: '/dashboard/packages',
                 icon: Package
             },
             {
                 title: 'Branches',
-                href: '/provider/dashboard/branches',
+                href: '/dashboard/branches',
                 icon: GitBranch
             }
         ]
@@ -65,12 +65,12 @@ export const providerNavSections: NavSection[] = [
         items: [
             {
                 title: 'Members',
-                href: '/provider/dashboard/team',
+                href: '/dashboard/team',
                 icon: Users
             },
             {
                 title: 'Documentation',
-                href: '/provider/dashboard/docs',
+                href: '/dashboard/docs',
                 icon: FileText
             }
         ]
@@ -80,23 +80,23 @@ export const providerNavSections: NavSection[] = [
         items: [
             {
                 title: 'Notifications',
-                href: '/provider/dashboard/notifications',
+                href: '/dashboard/notifications',
                 icon: Bell,
                 badge: 5
             },
             {
                 title: 'Profile',
-                href: '/provider/dashboard/profile',
+                href: '/dashboard/profile',
                 icon: User
             },
             {
                 title: 'Settings',
-                href: '/provider/dashboard/settings',
+                href: '/dashboard/settings',
                 icon: Settings
             },
             {
                 title: 'Help & Support',
-                href: '/provider/dashboard/help',
+                href: '/dashboard/help',
                 icon: HelpCircle
             }
         ]

@@ -1,6 +1,7 @@
 'use client';
 
 import { HeartPulse, LayoutDashboard, Loader2, LogOut, Menu, X } from 'lucide-react';
+import type { Route } from 'next';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
@@ -54,7 +55,7 @@ export function Navbar() {
                         {navLinks.map(link => (
                             <Link
                                 className='font-medium text-muted-foreground text-sm transition-colors hover:text-foreground'
-                                href={link.href}
+                                href={link.href as Route}
                                 key={link.href}
                             >
                                 {link.label}
@@ -75,7 +76,7 @@ export function Navbar() {
                                 >
                                     <Link
                                         className='flex items-center gap-2'
-                                        href={dashboardUrl}
+                                        href={dashboardUrl as Route}
                                     >
                                         <LayoutDashboard className='h-4 w-4' />
                                         Dashboard
@@ -95,16 +96,20 @@ export function Navbar() {
                             <>
                                 <Button
                                     asChild
+                                    className='bg-linear-to-r from-sky-500 to-emerald-500 text-white hover:from-sky-600 hover:to-emerald-600'
                                     size='sm'
-                                    variant='ghost'
                                 >
-                                    <Link href='/login'>Sign In</Link>
+                                    <Link href='/login'>
+                                        <LayoutDashboard className='mr-2 h-4 w-4' />
+                                        Doctor Portal
+                                    </Link>
                                 </Button>
                                 <Button
                                     asChild
                                     size='sm'
+                                    variant='outline'
                                 >
-                                    <Link href='/register'>Get Started</Link>
+                                    <Link href='/register'>Patient Sign Up</Link>
                                 </Button>
                             </>
                         )}
@@ -132,7 +137,7 @@ export function Navbar() {
                         {navLinks.map(link => (
                             <Link
                                 className='rounded-lg px-3 py-2 font-medium text-muted-foreground text-sm transition-colors hover:bg-accent hover:text-foreground'
-                                href={link.href}
+                                href={link.href as Route}
                                 key={link.href}
                                 onClick={() => setIsMobileMenuOpen(false)}
                             >
@@ -155,7 +160,7 @@ export function Navbar() {
                                     >
                                         <Link
                                             className='flex items-center justify-center gap-2'
-                                            href={dashboardUrl}
+                                            href={dashboardUrl as Route}
                                             onClick={() => setIsMobileMenuOpen(false)}
                                         >
                                             <LayoutDashboard className='h-4 w-4' />
@@ -179,27 +184,28 @@ export function Navbar() {
                                 <>
                                     <Button
                                         asChild
-                                        className='w-full'
+                                        className='w-full bg-linear-to-r from-sky-500 to-emerald-500 text-white hover:from-sky-600 hover:to-emerald-600'
                                         size='sm'
-                                        variant='outline'
                                     >
                                         <Link
-                                            href='/login'
+                                            href={'/login' as Route}
                                             onClick={() => setIsMobileMenuOpen(false)}
                                         >
-                                            Sign In
+                                            <LayoutDashboard className='mr-2 h-4 w-4' />
+                                            Doctor Portal
                                         </Link>
                                     </Button>
                                     <Button
                                         asChild
                                         className='w-full'
                                         size='sm'
+                                        variant='outline'
                                     >
                                         <Link
                                             href='/register'
                                             onClick={() => setIsMobileMenuOpen(false)}
                                         >
-                                            Get Started
+                                            Patient Sign Up
                                         </Link>
                                     </Button>
                                 </>

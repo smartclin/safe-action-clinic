@@ -1,4 +1,4 @@
-import 'server-only';
+// import 'server-only';
 
 import { PrismaPg } from '@prisma/adapter-pg';
 import { Pool } from 'pg';

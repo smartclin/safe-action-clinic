@@ -444,10 +444,10 @@ export const deletePatient = patientActionClient
 
             // Invalidate all patient-related caches
             // Note: revalidateTag typically needs a path argument in Next.js 15+
-            revalidateTag('patients-list', '/app/patients');
-            revalidateTag('recent-patients', '/app/dashboard');
-            revalidateTag('patient-stats', '/app/dashboard');
-            revalidateTag(`patient-${patientId}`, `/app/patients/${patientId}`);
+            revalidateTag('patients-list', '/patients');
+            revalidateTag('recent-patients', '/dashboard');
+            revalidateTag('patient-stats', '/dashboard');
+            revalidateTag(`patient-${patientId}`, `/patients/${patientId}`);
 
             // If you have a custom updateTag function, use it
             if (typeof updateTag === 'function') {

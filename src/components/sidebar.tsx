@@ -20,7 +20,9 @@ import { getRole } from '@/utils/roles';
 
 import { LogoutButton } from './logout-button';
 
-const ACCESS_LEVELS_ALL = ['admin', 'doctor', 'nurse', 'lab technician', 'patient'];
+// Access levels use uppercase to match database role format (ADMIN, DOCTOR, STAFF, PATIENT)
+// Note: 'nurse' and 'lab technician' are mapped to 'STAFF' role
+const ACCESS_LEVELS_ALL = ['ADMIN', 'DOCTOR', 'STAFF', 'PATIENT'];
 
 const SidebarIcon = ({ icon: Icon }: { icon: LucideIcon }) => {
     return <Icon className='size-6 lg:size-5' />;
@@ -42,7 +44,7 @@ export const Sidebar = async () => {
                 {
                     name: 'Profile',
                     href: '/patient/self',
-                    access: ['patient'],
+                    access: ['PATIENT'],
                     icon: User
                 }
             ]
@@ -53,79 +55,79 @@ export const Sidebar = async () => {
                 {
                     name: 'Users',
                     href: '/record/users',
-                    access: ['admin'],
+                    access: ['ADMIN'],
                     icon: Users
                 },
                 {
                     name: 'Doctors',
                     href: '/record/doctors',
-                    access: ['admin'],
+                    access: ['ADMIN'],
                     icon: User
                 },
                 {
                     name: 'Staffs',
                     href: '/record/staffs',
-                    access: ['admin', 'doctor'],
+                    access: ['ADMIN', 'DOCTOR'],
                     icon: UserRound
                 },
                 {
                     name: 'Patients',
                     href: '/record/patients',
-                    access: ['admin', 'doctor', 'nurse'],
+                    access: ['ADMIN', 'DOCTOR', 'STAFF'],
                     icon: UsersRound
                 },
                 {
                     name: 'Appointments',
                     href: '/record/appointments',
-                    access: ['admin', 'doctor', 'nurse'],
+                    access: ['ADMIN', 'DOCTOR', 'STAFF'],
                     icon: ListOrdered
                 },
                 {
                     name: 'Medical Records',
                     href: '/record/medical-records',
-                    access: ['admin', 'doctor', 'nurse'],
+                    access: ['ADMIN', 'DOCTOR', 'STAFF'],
                     icon: SquareActivity
                 },
                 {
                     name: 'Billing Overview',
                     href: '/record/billing',
-                    access: ['admin', 'doctor'],
+                    access: ['ADMIN', 'DOCTOR'],
                     icon: Receipt
                 },
                 {
                     name: 'Patient Management',
                     href: '/nurse/patient-management',
-                    access: ['nurse'],
+                    access: ['STAFF'],
                     icon: Users
                 },
                 {
                     name: 'Administer Medications',
                     href: '/nurse/administer-medications',
-                    access: ['admin', 'doctor', 'nurse'],
+                    access: ['ADMIN', 'DOCTOR', 'STAFF'],
                     icon: Pill
                 },
                 {
                     name: 'Appointments',
                     href: '/record/appointments',
-                    access: ['patient'],
+                    access: ['PATIENT'],
                     icon: ListOrdered
                 },
                 {
                     name: 'Records',
                     href: '/patient/self',
-                    access: ['patient'],
+                    access: ['PATIENT'],
                     icon: List
                 },
                 {
                     name: 'Prescription',
                     href: '#',
-                    access: ['patient'],
+                    access: ['PATIENT'],
                     icon: Pill
                 },
                 {
                     name: 'Billing',
                     href: '/patient/self?cat=payments',
-                    access: ['patient'],
+                    access: ['PATIENT'],
                     icon: Receipt
                 }
             ]
@@ -142,13 +144,13 @@ export const Sidebar = async () => {
                 {
                     name: 'Audit Logs',
                     href: '/admin/audit-logs',
-                    access: ['admin'],
+                    access: ['ADMIN'],
                     icon: Logs
                 },
                 {
                     name: 'Settings',
                     href: '/admin/system-settings',
-                    access: ['admin'],
+                    access: ['ADMIN'],
                     icon: Settings
                 }
             ]
@@ -179,7 +181,7 @@ export const Sidebar = async () => {
                             <span className='my-4 hidden font-bold text-gray-400 uppercase lg:block'>{el.label}</span>
 
                             {el.links
-                                .filter(link => link.access.includes(role.toLowerCase()))
+                                .filter(link => role && link.access.includes(role))
                                 .map(link => (
                                     <Link
                                         className='flex items-center justify-center gap-4 rounded-md py-2 text-gray-500 hover:bg-blue-600/10 md:px-2 lg:justify-start'
