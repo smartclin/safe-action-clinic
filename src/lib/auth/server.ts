@@ -1,6 +1,7 @@
 import 'server-only';
 
 import type { Route } from 'next';
+import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { cache } from 'react';
 
@@ -22,8 +23,9 @@ function hasAccess(userRole: Role, requiredRole: Role) {
 ---------------------------------------- */
 export const getSession = cache(async () => {
     try {
-        // ✅ DO NOT pass headers – Next handles cookies automatically
-        return await auth.api.getSession();
+        return await auth.api.getSession({
+            headers: await headers()
+        });
     } catch (error) {
         console.error('Failed to get session:', error);
         return null;

@@ -6,7 +6,7 @@ import { AnimatedBackground, LandingPageContent } from '@/components/layout-skel
  * Public landing page - no auth redirects needed here
  * Auth protection is handled by middleware and route groups
  */
-export default function Home() {
+export default async function Home() {
     return (
         <div className='relative min-h-screen overflow-hidden'>
             <AnimatedBackground />

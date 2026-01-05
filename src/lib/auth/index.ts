@@ -13,8 +13,12 @@ export const auth = betterAuth({
     }),
     experimental: { joins: true },
     trustedOrigins: [
-        'http://localhost:3000', // keep old port for consistency
-        'http://localhost:3001' // add your current dev port
+        'http://localhost:3000',
+        'http://localhost:3001',
+        'http://localhost:3003',
+        
+        'http://localhost:3004',
+        'http://localhost:3005'
     ],
 
     emailAndPassword: {

@@ -3,6 +3,7 @@ import type { NextConfig } from 'next';
 import packageJson from './package.json' with { type: 'json' };
 
 const nextConfig: NextConfig = {
+    skipProxyUrlNormalize: true,
     reactStrictMode: true,
     pageExtensions: ['ts', 'tsx'],
     logging: {
@@ -20,7 +21,7 @@ const nextConfig: NextConfig = {
         dangerouslyAllowSVG: true,
         unoptimized: process.env.NODE_ENV === 'development', // dev=fast, prod=optimized
         deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
-        imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+        imageSizes: [32, 48, 64, 96, 128, 256, 384],
         remotePatterns: [
             { protocol: 'http', hostname: 'localhost', port: '9000' },
             {

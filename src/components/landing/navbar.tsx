@@ -12,10 +12,10 @@ import { getRoleRedirect } from '@/lib/routes';
 import { cn } from '@/lib/utils';
 
 const navLinks = [
-    { href: '#services', label: 'Services' },
-    { href: '#about', label: 'About Us' },
-    { href: '#testimonials', label: 'Testimonials' },
-    { href: '#contact', label: 'Contact' }
+    { href: '/services', label: 'Services' },
+    { href: '/about', label: 'About Us' },
+    { href: '/testimonials', label: 'Testimonials' },
+    { href: '/contact', label: 'Contact' }
 ];
 
 export function Navbar() {
