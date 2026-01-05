@@ -1,70 +1,67 @@
-import { getSessionCookie } from 'better-auth/cookies';
-import type { NextRequest } from 'next/server';
-import { NextResponse } from 'next/server';
+import { headers } from 'next/headers';
+import { type NextRequest, NextResponse } from 'next/server';
 
 import { auth } from '@/lib/auth';
-import { AUTH_ROUTES, PUBLIC_ROUTES, ROLE_REDIRECTS } from '@/lib/routes';
-import type { Role } from '@/types/auth';
+import { routeAccess } from '@/lib/routes';
+
+const AUTH_ROUTES = ['/login', '/register', '/register-provider'];
+const DEFAULT_LOGIN = '/login';
 
 export async function proxy(request: NextRequest) {
-    const { pathname } = request.nextUrl;
+    const { pathname, origin } = request.nextUrl;
 
-    /* ----------------------------------------
-     1. Ignore static & API & Next.js internals
-  ---------------------------------------- */
-    if (
-        pathname.startsWith('/_next') ||
-        pathname.startsWith('/api') ||
-        pathname.startsWith('/public') ||
-        pathname.includes('.')
-    ) {
+    // 1️⃣ Allow public auth routes
+    if (AUTH_ROUTES.some(route => pathname.startsWith(route))) {
         return NextResponse.next();
     }
 
-    /* ----------------------------------------
-     2. Authenticated status check (Fast)
-  ---------------------------------------- */
-    const sessionCookie = getSessionCookie(request);
-    const isAuthenticated = Boolean(sessionCookie);
+    // 2️⃣ Get session
+    const session = await auth.api.getSession({
+        headers: await headers()
+    });
 
-    /* ----------------------------------------
-     3. Public routes logic
-  ---------------------------------------- */
-    const isPublic = PUBLIC_ROUTES.some(route => (route === '/' ? pathname === '/' : pathname.startsWith(route)));
-
-    if (isPublic) {
-        // Authenticated user on auth page -> redirect to their role-specific home
-        if (isAuthenticated && AUTH_ROUTES.some(route => pathname.startsWith(route))) {
-            const session = await auth.api.getSession({ headers: request.headers });
-            if (session?.user) {
-                const role = (session.user.role?.toLowerCase() as Role) || 'patient';
-                const redirectUrl = ROLE_REDIRECTS[role] || ROLE_REDIRECTS.patient;
-                return NextResponse.redirect(new URL(redirectUrl, request.url));
-            }
+    // 3️⃣ No session → redirect to login (but avoid loop)
+    if (!session) {
+        if (pathname !== DEFAULT_LOGIN) {
+            return NextResponse.redirect(new URL(DEFAULT_LOGIN, origin));
         }
         return NextResponse.next();
     }
 
-    /* ----------------------------------------
-     4. Protected routes check
-  ---------------------------------------- */
-    if (!isAuthenticated) {
-        const loginUrl = new URL('/login', request.url);
+    const role = session.user.role;
 
-        // Preserve callback ONLY for non-auth routes
-        if (!AUTH_ROUTES.some(route => pathname.startsWith(route))) {
-            loginUrl.searchParams.set('callbackUrl', pathname);
+    // 4️⃣ Check route access
+    const matchingRoute = Object.entries(routeAccess).find(([pattern]) => new RegExp(pattern).test(pathname));
+
+    if (matchingRoute && !matchingRoute[1].includes(role)) {
+        const redirectTo = getRoleHome(role);
+
+        // 🚫 prevent self-redirect
+        if (pathname !== redirectTo) {
+            return NextResponse.redirect(new URL(redirectTo, origin));
         }
-
-        return NextResponse.redirect(loginUrl);
     }
 
     return NextResponse.next();
 }
 
-/* ----------------------------------------
-   Matcher (simple & safe)
----------------------------------------- */
+/**
+ * Explicit role → route mapping
+ * NEVER redirect to `/${role}` blindly
+ */
+function getRoleHome(role: string) {
+    switch (role) {
+        case 'admin':
+            return '/admin/dashboard';
+        case 'doctor':
+            return '/doctor';
+        case 'patient':
+            return '/patient';
+        default:
+            return DEFAULT_LOGIN;
+    }
+}
+
 export const config = {
-    matcher: ['/((?!api|_next|favicon.ico).*)']
+    matcher: ['/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico)).*)']
 };

@@ -12,14 +12,7 @@ export const auth = betterAuth({
         provider: 'postgresql' // or "mysql", "postgresql", ...etc
     }),
     experimental: { joins: true },
-    trustedOrigins: [
-        'http://localhost:3000',
-        'http://localhost:3001',
-        'http://localhost:3003',
-        
-        'http://localhost:3004',
-        'http://localhost:3005'
-    ],
+    trustedOrigins: ['http://localhost:3000', 'http://localhost:5000'],
 
     emailAndPassword: {
         enabled: true

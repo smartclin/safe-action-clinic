@@ -41,7 +41,7 @@ export default function LoginPage() {
                 </div>
 
                 {/* Clinic Showcase */}
-                <div className='relative z-10 my-auto flex max-w-[500px] flex-col gap-8'>
+                <div className='relative z-10 my-auto flex max-w-125 flex-col gap-8'>
                     <div className='fade-in slide-in-from-bottom-4 animate-in space-y-4 delay-100 duration-700'>
                         <div className='inline-flex items-center gap-2 rounded-full bg-blue-100 px-4 py-2'>
                             <Sparkles className='h-4 w-4 text-blue-600' />
@@ -145,7 +145,7 @@ export default function LoginPage() {
 
             {/* Right Column: Login Form */}
             <div className='flex min-h-screen items-center justify-center bg-linear-to-b from-white to-blue-50 p-8 lg:p-12'>
-                <div className='w-full max-w-[450px] space-y-8'>
+                <div className='w-full max-w-112.5 space-y-8'>
                     {/* Mobile Header */}
                     <div className='lg:hidden'>
                         <div className='mb-8 flex items-center justify-center gap-3'>

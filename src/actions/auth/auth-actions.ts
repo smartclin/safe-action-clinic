@@ -71,16 +71,8 @@ export async function signIn(values: z.infer<typeof SignInSchema>): Promise<Acti
             };
         }
 
-        // Role-based redirection
-        // 🟢 EDIT THIS PART:
-        let redirectPath: Route;
-
-        if (userWithRole.role === 'ADMIN') {
-            redirectPath = '/admin'; // Force Admin to /admin
-        } else {
-            // Fallback to your existing helper
-            redirectPath = getRoleRedirect(userWithRole.role as Role) as Route;
-        }
+        const role = (userWithRole.role?.toLowerCase() || 'doctor') as Role;
+        const redirectPath = getRoleRedirect(role) as Route;
 
         redirect(redirectPath);
     } catch (error) {

@@ -5,6 +5,7 @@ import packageJson from './package.json' with { type: 'json' };
 const nextConfig: NextConfig = {
     skipProxyUrlNormalize: true,
     reactStrictMode: true,
+    allowedDevOrigins: ['192.168.137.2', 'localhost:5000'],
     pageExtensions: ['ts', 'tsx'],
     logging: {
         fetches: {
@@ -74,7 +75,6 @@ const nextConfig: NextConfig = {
         },
         resolveExtensions: ['.mdx', '.tsx', '.ts', '.jsx', '.js', '.json']
     },
-    allowedDevOrigins: ['192.168.137.2'],
     headers: async () => {
         return [
             {

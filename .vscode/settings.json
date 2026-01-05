@@ -274,7 +274,7 @@
     // Reduce automatic computation
     "editor.occurrencesHighlight": "off",
     "editor.selectionHighlight": false,
-    "editor.hover.enabled": true,
+    "editor.hover.enabled": "on",
     "editor.hover.delay": 500, // Reduced from default
     "editor.hover.sticky": false,
 

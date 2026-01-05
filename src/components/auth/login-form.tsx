@@ -50,8 +50,9 @@ export function LoginInForm() {
                 toast.success('Signed in successfully', { id: toastId });
 
                 // Get role from the signed-in user data
-                const user = data.user as { role?: Role };
-                const redirectPath = getRoleRedirect(user.role);
+                const user = data.user as { role?: string };
+                const role = (user.role?.toLowerCase() || 'doctor') as Role;
+                const redirectPath = getRoleRedirect(role);
 
                 // Refresh server components and navigate
                 router.refresh();
@@ -66,7 +67,7 @@ export function LoginInForm() {
     }
 
     return (
-        <div className='fade-in slide-in-from-bottom-4 mx-auto w-full max-w-[400px] animate-in space-y-8 duration-500'>
+        <div className='fade-in slide-in-from-bottom-4 mx-auto w-full max-w-100 animate-in space-y-8 duration-500'>
             {/* Header Section */}
             <div className='flex flex-col space-y-2 text-center md:text-left'>
                 <h1 className='font-bold text-3xl text-slate-900 tracking-tight dark:text-white'>Welcome back</h1>
