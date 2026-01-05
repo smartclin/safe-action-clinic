@@ -17,6 +17,7 @@ import {
     Users,
     Users2
 } from 'lucide-react';
+import type Route from 'next';
 import Link from 'next/link';
 
 import {
@@ -377,7 +378,7 @@ export function AdminOverview() {
                             >
                                 <Link
                                     className='flex items-center gap-1'
-                                    href='/admin/activity'
+                                    href='/admin/analytics'
                                 >
                                     View all
                                     <ChevronRight className='h-4 w-4' />
@@ -577,7 +578,7 @@ function AdminAction({
     return (
         <Link
             className={`flex flex-col items-center justify-center rounded-lg border p-4 transition-all hover:shadow-sm ${variantClasses[variant]}`}
-            href={href}
+            href={href as Route}
         >
             <Icon className={`mb-2 h-8 w-8 ${iconColors[variant]}`} />
             <span className='mb-1 text-center font-semibold text-sm'>{label}</span>

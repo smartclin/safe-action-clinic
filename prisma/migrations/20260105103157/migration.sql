@@ -61,17 +61,17 @@ CREATE TABLE "user" (
     "emailVerified" BOOLEAN NOT NULL DEFAULT false,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "role" TEXT,
+    "role" "UserRole",
     "banned" BOOLEAN DEFAULT false,
     "banReason" TEXT,
     "banExpires" TIMESTAMP(3),
-    "isAdminUser" BOOLEAN DEFAULT false,
     "twoFactorEnabled" BOOLEAN DEFAULT false,
     "deletedAt" TIMESTAMP(3),
     "isDeleted" BOOLEAN DEFAULT false,
     "timezone" TEXT DEFAULT 'UTC',
     "language" TEXT DEFAULT 'en',
     "isAdmin" BOOLEAN DEFAULT false,
+    "phone" TEXT,
 
     CONSTRAINT "user_pkey" PRIMARY KEY ("id")
 );
@@ -277,7 +277,7 @@ CREATE TABLE "Payment" (
     "patientId" TEXT,
     "appointmentId" TEXT NOT NULL,
     "billDate" TIMESTAMP(3) NOT NULL,
-    "paymentDate" TIMESTAMP(3),
+    "paymentDate" DATE,
     "discount" DECIMAL(10,2),
     "totalAmount" DECIMAL(10,2),
     "amountPaid" DECIMAL(10,2),
@@ -937,10 +937,7 @@ CREATE INDEX "Appointment_doctorId_appointmentDate_idx" ON "Appointment"("doctor
 CREATE INDEX "Appointment_status_appointmentDate_idx" ON "Appointment"("status", "appointmentDate");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "LabTest_recordId_key" ON "LabTest"("recordId");
-
--- CreateIndex
-CREATE UNIQUE INDEX "LabTest_serviceId_key" ON "LabTest"("serviceId");
+CREATE INDEX "LabTest_serviceId_idx" ON "LabTest"("serviceId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "MedicalRecords_appointmentId_key" ON "MedicalRecords"("appointmentId");

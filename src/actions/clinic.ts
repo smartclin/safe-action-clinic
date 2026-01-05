@@ -30,7 +30,7 @@ export const addUserToClinic = clinicClient
         const session = await getSession();
         if (!session?.user) throw new Error('Unauthorized');
 
-        const isAdmin = await checkRole('ADMIN');
+        const isAdmin = await checkRole('admin');
         if (!isAdmin) throw new Error('Insufficient permissions');
 
         const clinicMember = await db.clinicMember.create({

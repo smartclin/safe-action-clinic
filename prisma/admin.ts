@@ -23,7 +23,7 @@ async function seedAdmin() {
                 password: adminPassword,
                 name: adminName,
                 role: 'admin',
-                data: { role: 'admin', isAdmin: true, phone: adminPhone }
+                data: { role: 'ADMIN', isAdmin: true, phone: adminPhone }
             }
         });
         console.log(`👨‍💻 Admin user created/updated: ${authUser.email}`);
@@ -34,7 +34,7 @@ async function seedAdmin() {
             update: {
                 name: adminName,
                 email: adminEmail,
-                role: 'admin',
+                role: 'ADMIN',
                 emailVerified: true,
                 isDeleted: false,
                 isAdmin: true,
@@ -44,7 +44,7 @@ async function seedAdmin() {
                 id: authUser.id,
                 name: adminName,
                 email: adminEmail,
-                role: 'admin',
+                role: 'ADMIN',
                 emailVerified: true,
                 isDeleted: false,
                 isAdmin: true,

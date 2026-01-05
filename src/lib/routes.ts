@@ -1,3 +1,29 @@
+import type { Role } from '@/types/auth';
+export const PUBLIC_ROUTES = [
+    '/',
+    '/login',
+    '/register',
+    '/register-provider',
+    '/choose-role',
+    '/api/auth',
+    '/_next',
+    '/favicon.ico'
+];
+
+export const AUTH_ROUTES = ['/login', '/register', '/register-provider', '/choose-role'];
+
+export const PROTECTED_ROUTES = ['/dashboard', '/admin', '/doctor', '/staff', '/patient', '/record'];
+
+// Better-Auth returns lowercase roles, so we use lowercase keys
+export const ROLE_REDIRECTS: Record<Role, string> = {
+    admin: '/admin/dashboard',
+    doctor: '/doctor',
+    staff: '/staff',
+    patient: '/patient'
+};
+
+export const DEFAULT_REDIRECT = '/';
+
 type RouteAccessProps = {
     [key: string]: string[];
 };
@@ -36,42 +62,36 @@ export const routeAccess: RouteAccessProps = {
  * @param userRole - The user's role (should be uppercase: ADMIN, DOCTOR, STAFF, PATIENT)
  * @returns true if user has access, false otherwise
  */
-export function checkRouteAccess(pathname: string, userRole: string): boolean {
-    // Normalize role to uppercase for comparison
-    const normalizedRole = userRole.toUpperCase();
 
-    for (const [routePattern, allowedRoles] of Object.entries(routeAccess)) {
-        const regex = new RegExp(`^${routePattern.replace(/\(\.\*\)/, '.*')}$`);
-        if (regex.test(pathname)) {
-            // Check if normalized role is in allowed roles (also normalized)
-            return allowedRoles.map(r => r.toUpperCase()).includes(normalizedRole);
-        }
-    }
-    // Allow access if no specific rule matches (default allow)
-    return true;
+export function checkRouteAccess(pathname: string, role: Role): boolean {
+    const roleAccessMap: Record<Role, string[]> = {
+        admin: ['/admin', '/dashboard', '/record'],
+        doctor: ['/doctor', '/dashboard', '/record'],
+        staff: ['/staff', '/dashboard', '/record'],
+        patient: ['/patient', '/dashboard']
+    };
+
+    return roleAccessMap[role]?.some(route => pathname.startsWith(route)) ?? false;
 }
 
-// import { createRouteMatcher } from "@clerk/nextjs/server";
+/**
+ * Get redirect path for a role
+ */
+export function getRoleRedirect(role: Role | undefined): string {
+    if (!role) return '/login';
+    return ROLE_REDIRECTS[role] ?? DEFAULT_REDIRECT;
+}
 
-// export const routeMatchers = {
-//   admin: createRouteMatcher([
-//     "/admin(.*)",
-//     "/patient(.*)",
-//     "/record/users",
-//     "/record/doctors(.*)",
-//     "/record/patients",
-//     "/record/doctors",
-//     "/record/staffs",
-//     "/record/patients",
-//   ]),
-//   patient: createRouteMatcher(["/patient(.*)", "/patient/registrations"]),
+/**
+ * Check if a path is an auth route
+ */
+export function isAuthRoute(pathname: string): boolean {
+    return AUTH_ROUTES.some(route => pathname.startsWith(route));
+}
 
-//   doctor: createRouteMatcher([
-//     "/doctor(.*)",
-//     "/record/doctors(.*)",
-//     "/record/patients",
-//     "/patient(.*)",
-//     "/record/staffs",
-//     "/record/patients",
-//   ]),
-// };
+/**
+ * Check if a path is a protected route
+ */
+export function isProtectedRoute(pathname: string): boolean {
+    return PROTECTED_ROUTES.some(route => pathname.startsWith(route));
+}

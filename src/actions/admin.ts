@@ -40,8 +40,8 @@ export const createNewStaff = actionClient
                 return { success: false, message: 'Unauthorized', error: true };
             }
 
-            // Check role
-            const isAdmin = await checkRole('ADMIN');
+            // Check role (must pass required roles)
+            const isAdmin = await checkRole('admin');
             if (!isAdmin) {
                 return { success: false, message: 'Unauthorized', error: true };
             }

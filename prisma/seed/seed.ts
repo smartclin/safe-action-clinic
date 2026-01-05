@@ -243,7 +243,7 @@ async function createUsers(prisma: PrismaSeedClient) {
                 email: `admin${i + 1}@mediclinic.com`,
                 emailVerified: true,
                 image: faker.image.avatar(),
-                role: 'admin',
+                role: 'ADMIN',
                 banned: false,
                 isAdmin: true,
                 twoFactorEnabled: i === 0,
@@ -262,7 +262,7 @@ async function createUsers(prisma: PrismaSeedClient) {
                 email: faker.internet.email({ firstName: faker.person.firstName(), lastName: faker.person.lastName() }),
                 emailVerified: faker.datatype.boolean(0.8),
                 image: faker.image.avatar(),
-                role: 'doctor',
+                role: 'DOCTOR',
                 banned: false,
                 isAdmin: false,
                 createdAt: faker.date.past({ years: 2 })
@@ -280,7 +280,7 @@ async function createUsers(prisma: PrismaSeedClient) {
                 email: faker.internet.email(),
                 emailVerified: faker.datatype.boolean(0.9),
                 image: faker.image.avatar(),
-                role: 'staff',
+                role: 'STAFF',
                 banned: false,
                 isAdmin: false,
                 createdAt: faker.date.past({ years: 1 })
@@ -298,7 +298,7 @@ async function createUsers(prisma: PrismaSeedClient) {
                 email: faker.internet.email(),
                 emailVerified: faker.datatype.boolean(0.7),
                 image: faker.image.avatar(),
-                role: 'patient',
+                role: 'PATIENT',
                 banned: false,
                 banReason: null,
                 banExpires: null,
@@ -335,7 +335,7 @@ async function associateUsersWithClinics(prisma: PrismaSeedClient, users: User[]
 async function createDoctors(prisma: PrismaSeedClient, users: User[], clinics: Clinic[]) {
     console.log('👨‍⚕️ Creating doctors...');
     const doctors = [];
-    const doctorUsers = users.filter(user => user.role === 'doctor');
+    const doctorUsers = users.filter(user => user.role === 'DOCTOR');
 
     const specialties = [
         'Pediatrics',
@@ -422,7 +422,7 @@ async function createDoctors(prisma: PrismaSeedClient, users: User[], clinics: C
 async function createStaff(prisma: PrismaSeedClient, users: User[], clinics: Clinic[]) {
     console.log('👨‍💼 Creating staff...');
     const staff = [];
-    const staffUsers = users.filter(user => user.role === 'staff');
+    const staffUsers = users.filter(user => user.role === 'STAFF');
 
     for (let i = 0; i < Math.min(CONFIG.totalStaff, staffUsers.length); i++) {
         const user = staffUsers[i];
@@ -471,7 +471,7 @@ async function createStaff(prisma: PrismaSeedClient, users: User[], clinics: Cli
 async function createPatients(prisma: PrismaSeedClient, users: User[], clinics: Clinic[]) {
     console.log('👤 Creating patients...');
     const patients = [];
-    const patientUsers = users.filter(user => user.role === 'patient');
+    const patientUsers = users.filter(user => user.role === 'PATIENT');
 
     for (let i = 0; i < Math.min(CONFIG.totalPatients, patientUsers.length); i++) {
         const user = patientUsers[i];

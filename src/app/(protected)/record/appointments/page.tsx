@@ -84,7 +84,7 @@ const Appointments = async (props: {
     });
 
     const userId = session?.user?.id;
-    const isPatient = await checkRole('PATIENT');
+    const isPatient = await checkRole('patient');
 
     const page = (searchParams?.p || '1') as string;
     const searchQuery = searchParams?.q || '';
@@ -92,11 +92,11 @@ const Appointments = async (props: {
 
     let queryId;
 
-    if (userRole === 'admin' || (userRole === 'doctor' && id) || (userRole === 'nurse' && id)) {
+    if (userRole === 'admin' || (userRole === 'doctor' && id) || (userRole === 'staff' && id)) {
         queryId = id;
     } else if (userRole === 'doctor' || userRole === 'patient') {
         queryId = userId;
-    } else if (userRole === 'nurse') {
+    } else if (userRole === 'staff') {
         queryId = undefined;
     }
 

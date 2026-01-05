@@ -1,5 +1,5 @@
 import type { Doctor, Patient } from '@/generated/browser';
-import type { AppointmentStatus } from '@/generated/enums';
+import type { AppointmentStatus, UserRole } from '@/generated/enums';
 
 // types/index.ts
 export interface StaffData {
@@ -7,7 +7,7 @@ export interface StaffData {
     name: string;
     email: string | null;
     phone?: string | null;
-    role: string;
+    role: UserRole;
     department?: string | null;
     licenseNumber?: string | null;
     address?: string | null;
@@ -42,7 +42,7 @@ export interface PatientData {
     lastName: string;
     email?: string;
     phone?: string;
-    dateOfBirth: Date;
+    dateOfBirth: Date;  
     gender: string;
     bloodGroup?: string;
     status: string;

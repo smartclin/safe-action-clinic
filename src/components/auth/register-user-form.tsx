@@ -2,6 +2,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2, Lock, Mail, User } from 'lucide-react';
+import type { Route } from 'next';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -14,7 +15,7 @@ import { signInWithGoogle } from '@/actions/auth/google-auth-actions';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { ROLE_REDIRECTS } from '@/config/auth';
+import { ROLE_REDIRECTS } from '@/lib/routes';
 import { SignUpUserSchema } from '@/schema';
 
 export function RegisterUserForm() {
@@ -42,7 +43,7 @@ export function RegisterUserForm() {
                 toast.success('Account created successfully!', { id: toastId });
                 // Better Auth auto-logs in on signup, refresh and redirect to user dashboard
                 router.refresh();
-                router.push(ROLE_REDIRECTS.PATIENT);
+                router.push(ROLE_REDIRECTS.patient as Route);
             } else {
                 toast.error(result.error, { id: toastId });
             }

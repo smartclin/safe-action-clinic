@@ -1,50 +1,53 @@
-import { Book, Code2, GitPullRequest, Palette, Rocket, Terminal, User, Users } from 'lucide-react';
+import { Baby, Calendar, FileText, HeartPulse, Stethoscope, User } from 'lucide-react';
 import Link from 'next/link';
 import type React from 'react';
 
+import { DownloadAppButton } from './download-app-button';
 import { RoleCard } from './role-card';
-import { type RoleOption, UserRole } from './types';
+import { RegistrationRole, type RoleOption } from './types';
 
 const ChooseRole: React.FC = () => {
     const roles: RoleOption[] = [
         {
-            id: UserRole.PATIENT,
-            title: 'Developer Account',
-            description: 'Start building with the starter kit. Access the dashboard, components, and documentation.',
+            id: RegistrationRole.PATIENT,
+            title: 'Patient Account',
+            description:
+                'Register as a patient to access your medical records, schedule appointments, and manage your health information.',
             href: '/register',
             visualIcon: (
-                <User
+                <Baby
                     size={32}
                     strokeWidth={2}
                 />
             ),
             primaryColor: 'from-blue-500 to-cyan-500',
-            buttonText: 'Create Developer Account',
+            buttonText: 'Register as Patient',
             features: [
-                { icon: <Rocket />, text: 'Access to starter kit dashboard' },
-                { icon: <Palette />, text: 'Browse UI components & templates' },
-                { icon: <Terminal />, text: 'CLI tools and generators' },
-                { icon: <Book />, text: 'Full documentation access' }
+                { icon: <Calendar />, text: 'Schedule appointments' },
+                { icon: <FileText />, text: 'View medical records' },
+                { icon: <HeartPulse />, text: 'Track health history' },
+                { icon: <User />, text: 'Manage profile information' }
             ]
         },
         {
-            id: UserRole.PROVIDER,
-            title: 'Contributor Account',
-            description: 'Join the team to contribute code, review PRs, and help build the next version.',
+            id: RegistrationRole.DOCTOR,
+            title: 'Doctor Account',
+            description:
+                'Register as a healthcare provider to manage patients, create medical records, and provide care.',
             href: '/register-provider',
             visualIcon: (
-                <Code2
+                <Stethoscope
                     size={32}
                     strokeWidth={2}
                 />
             ),
             primaryColor: 'from-teal-500 to-emerald-500',
-            buttonText: 'Become a Contributor',
+            buttonText: 'Register as Doctor',
             features: [
-                { icon: <GitPullRequest />, text: 'Submit pull requests' },
-                { icon: <Code2 />, text: 'Contribute components' },
-                { icon: <Users />, text: 'Join team discussions' },
-                { icon: <Book />, text: 'Access internal docs' }
+                { icon: <Stethoscope />, text: 'Manage patient care' },
+                { icon: <FileText />, text: 'Create medical records' },
+                { icon: <Calendar />, text: 'Schedule appointments' },
+                { icon: <HeartPulse />, text: 'Prescribe medications' }
             ]
         }
     ];
@@ -75,15 +78,18 @@ const ChooseRole: React.FC = () => {
                         ))}
                     </div>
 
-                    <p className='mt-8 text-center text-slate-400 text-sm dark:text-slate-500'>
-                        Already have an account?{' '}
-                        <Link
-                            className='font-medium text-brand-600 hover:underline dark:text-cyan-400'
-                            href='/login'
-                        >
-                            Sign in here
-                        </Link>
-                    </p>
+                    <div className='mt-8 flex flex-col items-center gap-4'>
+                        <DownloadAppButton href='/download' />
+                        <p className='text-center text-slate-400 text-sm dark:text-slate-500'>
+                            Already have an account?{' '}
+                            <Link
+                                className='font-medium text-brand-600 hover:underline dark:text-cyan-400'
+                                href='/login'
+                            >
+                                Sign in here
+                            </Link>
+                        </p>
+                    </div>
                 </div>
             </main>
 

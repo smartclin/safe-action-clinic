@@ -30,6 +30,9 @@ const SidebarIcon = ({ icon: Icon }: { icon: LucideIcon }) => {
 
 export const Sidebar = async () => {
     const role = await getRole();
+    // Normalize role to uppercase for comparison with access arrays
+    // (access arrays use uppercase to match database format)
+    const normalizedRole = role?.toUpperCase();
 
     const SIDEBAR_LINKS = [
         {
@@ -181,7 +184,7 @@ export const Sidebar = async () => {
                             <span className='my-4 hidden font-bold text-gray-400 uppercase lg:block'>{el.label}</span>
 
                             {el.links
-                                .filter(link => role && link.access.includes(role))
+                                .filter(link => normalizedRole && link.access.includes(normalizedRole))
                                 .map(link => (
                                     <Link
                                         className='flex items-center justify-center gap-4 rounded-md py-2 text-gray-500 hover:bg-blue-600/10 md:px-2 lg:justify-start'

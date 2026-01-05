@@ -2,6 +2,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2, Lock, Mail } from 'lucide-react';
+import type { Route } from 'next';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -13,8 +14,8 @@ import { signInWithGoogle } from '@/actions/auth/google-auth-actions';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { getRoleRedirect } from '@/config/auth';
 import { authClient } from '@/lib/auth/client';
+import { getRoleRedirect } from '@/lib/routes';
 import { SignInSchema } from '@/schema';
 import type { Role } from '@/types/auth';
 
@@ -54,7 +55,7 @@ export function LoginInForm() {
 
                 // Refresh server components and navigate
                 router.refresh();
-                router.push(redirectPath);
+                router.push(redirectPath as Route);
             }
         } catch (error) {
             toast.error('An unexpected error occurred', { id: toastId });
@@ -111,7 +112,7 @@ export function LoginInForm() {
                                         <FormLabel className='text-slate-700 dark:text-slate-300'>Password</FormLabel>
                                         <Link
                                             className='font-medium text-primary text-sm transition-colors hover:text-primary/80'
-                                            href='/forgot-password'
+                                            href={'/forgot-password' as Route}
                                         >
                                             Forgot password?
                                         </Link>

@@ -139,7 +139,7 @@ export const BillsContainer = async ({ id }: { id: string }) => {
                     </div>
                 </div>
 
-                {((await checkRole('ADMIN')) || (await checkRole('DOCTOR'))) && (
+                {((await checkRole('admin')) || (await checkRole('doctor'))) && (
                     <div className='mt-5 flex items-center justify-end'>
                         <AddBills
                             appId={id}

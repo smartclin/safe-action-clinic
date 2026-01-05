@@ -1,22 +1,29 @@
 import { getSession } from '@/lib/auth/server';
-import type { UserRole } from '@/types';
+import type { Role } from '@/types/auth';
 
 /**
  * Check if the current user has a specific role.
- * Roles are stored as uppercase in the database (ADMIN, DOCTOR, STAFF, PATIENT).
+ * Better-Auth returns lowercase roles, so we compare lowercase.
  */
-export const checkRole = async (role: UserRole) => {
+export const checkRole = async (role: Role) => {
     const session = await getSession();
-    // Compare with uppercase since roles are stored as uppercase
-    return session?.user?.role === role.toUpperCase();
+    if (!session?.user?.role) return false;
+
+    // Normalize both roles to lowercase for comparison
+    const userRole = session.user.role.toLowerCase() as Role;
+    return userRole === role.toLowerCase();
 };
 
 /**
  * Get the current user's role.
- * Returns uppercase role (ADMIN, DOCTOR, STAFF, PATIENT) or null if not authenticated.
+ * Returns lowercase role (admin, doctor, staff, patient) or null if not authenticated.
+ * Better-Auth normalizes roles to lowercase in the customSession plugin.
  */
-export const getRole = async (): Promise<UserRole | null> => {
+export const getRole = async (): Promise<Role | null> => {
     const session = await getSession();
-    const role = session?.user?.role as UserRole | undefined;
+    if (!session?.user?.role) return null;
+
+    // Normalize to lowercase (Better-Auth returns lowercase)
+    const role = session.user.role.toLowerCase() as Role;
     return role || null;
 };

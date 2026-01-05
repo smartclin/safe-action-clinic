@@ -1,71 +1,68 @@
 import 'server-only';
 
 import type { Route } from 'next';
-import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
+import { cache } from 'react';
 
-import { getRoleRedirect } from '@/config/auth';
+import { auth } from '@/lib/auth';
+import { getRoleRedirect } from '@/lib/routes';
 import type { Role } from '@/types/auth';
 
-import { auth } from '.';
+/* ----------------------------------------
+   Role hierarchy (IMPORTANT)
+---------------------------------------- */
+const ROLE_ORDER: Role[] = ['patient', 'staff', 'doctor', 'admin'];
 
-/**
- * Get the current session on the server.
- * Use this in Server Components and Server Actions.
- *
- * @example
- * // In a Server Component
- * const session = await getServerSession()
- * if (!session) redirect('/login')
- */
-export async function getSession() {
-    const session = await auth.api.getSession({
-        headers: await headers()
-    });
-    return session;
+function hasAccess(userRole: Role, requiredRole: Role) {
+    return ROLE_ORDER.indexOf(userRole) >= ROLE_ORDER.indexOf(requiredRole);
 }
 
-/**
- * Get the current user on the .
- * Returns null if not authenticated.
- */
+/* ----------------------------------------
+   Session (single source of truth)
+---------------------------------------- */
+export const getSession = cache(async () => {
+    try {
+        // ✅ DO NOT pass headers – Next handles cookies automatically
+        return await auth.api.getSession();
+    } catch (error) {
+        console.error('Failed to get session:', error);
+        return null;
+    }
+});
+
+/* ----------------------------------------
+   User helpers
+---------------------------------------- */
 export async function getUser() {
     const session = await getSession();
     return session?.user ?? null;
 }
 
-/**
- * Require authentication on a server page/action.
- * Redirects to login if not authenticated.
- *
- * @example
- * // In a Server Component
- * export default async function ProtectedPage() {
- *   const session = await requireAuth()
- *   return <div>Hello {session.user.name}</div>
- * }
- */
-export async function requireAuth(redirectTo = '/login') {
+export async function isAuthenticated(): Promise<boolean> {
+    return !!(await getSession());
+}
+
+/* ----------------------------------------
+   Auth guards
+---------------------------------------- */
+export async function requireAuth(requiredRole?: Role) {
     const session = await getSession();
 
-    if (!session) {
-        redirect(redirectTo as Route);
+    if (!session?.user) {
+        redirect('/login');
+    }
+
+    if (requiredRole) {
+        const userRole = (session.user.role ?? 'patient') as Role;
+
+        if (!hasAccess(userRole, requiredRole)) {
+            redirect(getRoleRedirect(userRole) as Route);
+        }
     }
 
     return session;
 }
 
-/**
- * Require a specific role on a server page/action.
- * Redirects if not authenticated or wrong role.
- *
- * @example
- * // In an Admin Server Component
- * export default async function AdminPage() {
- *   const session = await requireRole('ADMIN')
- *   return <div>Admin Panel</div>
- * }
- */
 export async function requireRole(
     role: Role,
     options?: {
@@ -75,38 +72,44 @@ export async function requireRole(
 ) {
     const session = await getSession();
 
-    if (!session) {
-        redirect(options?.redirectTo ?? ('/login' as Route));
+    if (!session?.user) {
+        redirect(options?.redirectTo ?? '/login');
     }
 
-    const userRole = (session.user as { role?: Role }).role;
+    const userRole = (session.user.role ?? 'patient') as Role;
 
-    if (userRole !== role) {
-        // Redirect to appropriate dashboard based on actual role
-        const defaultRedirect = getRoleRedirect(userRole);
-        redirect(options?.roleRedirectTo ?? (defaultRedirect as Route));
+    if (!hasAccess(userRole, role)) {
+        redirect(options?.roleRedirectTo ?? (getRoleRedirect(userRole) as Route));
     }
 
     return session;
 }
 
-/**
- * Check if the current user has a specific role.
- * Does not redirect - just returns boolean.
- */
-export async function hasRole(role: Role): Promise<boolean> {
+/* ----------------------------------------
+   Role checks (no redirect)
+---------------------------------------- */
+export async function hasRole(role: Role | Role[]): Promise<boolean> {
     const session = await getSession();
-    if (!session) return false;
+    if (!session?.user) return false;
 
-    const userRole = (session.user as { role?: Role }).role;
-    return userRole === role;
+    const userRole = (session.user.role ?? 'patient') as Role;
+    const roles = Array.isArray(role) ? role : [role];
+
+    return roles.some(r => hasAccess(userRole, r));
 }
 
-/**
- * Check if the current user is authenticated.
- * Does not redirect - just returns boolean.
- */
-export async function isAuthenticated(): Promise<boolean> {
-    const session = await getSession();
-    return !!session;
+/* ----------------------------------------
+   Role redirect helper
+---------------------------------------- */
+export function getRoleRedirectPath(role?: Role | string): string {
+    if (!role) return '/dashboard';
+
+    const redirects: Record<Role, string> = {
+        admin: '/admin/dashboard',
+        doctor: '/doctor',
+        staff: '/staff',
+        patient: '/patient'
+    };
+
+    return redirects[role as Role] ?? '/dashboard';
 }

@@ -1,4 +1,8 @@
-import type { Role } from '@/types/auth';
+import type { Route } from 'next';
+import { redirect } from 'next/navigation';
+
+import { getSession } from '@/lib/auth/server';
+import { getRole } from '@/utils/roles';
 
 /**
  * Centralized auth configuration.
@@ -6,40 +10,11 @@ import type { Role } from '@/types/auth';
  */
 
 // Role-based dashboard redirects after login
-export const ROLE_REDIRECTS: Record<Role, string> = {
-    ADMIN: '/admin',
-    DOCTOR: '/doctor',
-    PATIENT: '/patient',
-    STAFF: '/staff'
-} as const;
 
-// Default redirect for unknown roles
-export const DEFAULT_REDIRECT = '/dashboard';
+export async function authRedirectIfNeeded() {
+    const session = await getSession();
+    if (!session?.user?.id) return;
 
-// Auth routes (public, redirect away if authenticated)
-export const AUTH_ROUTES = ['/login', '/register', '/register-provider'] as const;
-
-// Protected routes (require authentication)
-export const PROTECTED_ROUTES = ['/admin', '/doctor', '/patient', '/staff', '/settings', '/profile'] as const;
-
-/**
- * Get redirect path for a role
- */
-export function getRoleRedirect(role: Role | undefined): string {
-    if (!role) return '/login';
-    return ROLE_REDIRECTS[role] ?? DEFAULT_REDIRECT;
-}
-
-/**
- * Check if a path is an auth route
- */
-export function isAuthRoute(pathname: string): boolean {
-    return AUTH_ROUTES.some(route => pathname.startsWith(route));
-}
-
-/**
- * Check if a path is a protected route
- */
-export function isProtectedRoute(pathname: string): boolean {
-    return PROTECTED_ROUTES.some(route => pathname.startsWith(route));
+    const role = await getRole();
+    if (role) redirect(`/${role.toLowerCase()}` as Route);
 }

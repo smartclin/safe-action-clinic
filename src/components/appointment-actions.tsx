@@ -18,7 +18,7 @@ interface ActionsProps {
 
 export const AppointmentActionOptions = async ({ patientId, doctorId, status, appointmentId }: ActionsProps) => {
     const user = await getUser();
-    const isAdmin = await checkRole('ADMIN');
+    const isAdmin = await checkRole('admin');
 
     return (
         <Popover>

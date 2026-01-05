@@ -1,3 +1,4 @@
+import type { Route } from 'next';
 import { draftMode } from 'next/headers';
 import { redirect } from 'next/navigation';
 
@@ -17,5 +18,5 @@ export async function GET(request: Request) {
     draft.enable();
 
     // Redirect safely to the slug path
-    redirect(slug);
+    redirect(slug as Route);
 }

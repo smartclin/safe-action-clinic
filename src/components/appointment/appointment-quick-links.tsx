@@ -6,7 +6,7 @@ import { ReviewForm } from '../dialogs/review-form';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 
 const AppointmentQuickLinks = async ({ staffId }: { staffId: string }) => {
-    const isPatient = await checkRole('PATIENT');
+    const isPatient = await checkRole('patient');
 
     return (
         <Card className='w-full rounded-xl bg-white shadow-none'>

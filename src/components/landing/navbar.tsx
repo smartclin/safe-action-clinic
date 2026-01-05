@@ -1,13 +1,14 @@
 'use client';
 
-import { HeartPulse, LayoutDashboard, Loader2, LogOut, Menu, X } from 'lucide-react';
+import { LayoutDashboard, Loader2, LogOut, Menu, X } from 'lucide-react';
 import type { Route } from 'next';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
-import { getRoleRedirect } from '@/config/auth';
 import { useAuth } from '@/hooks';
+import { getRoleRedirect } from '@/lib/routes';
 import { cn } from '@/lib/utils';
 
 const navLinks = [
@@ -44,10 +45,17 @@ export function Navbar() {
                         className='group flex items-center gap-2'
                         href='/'
                     >
-                        <div className='relative flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground shadow-lg shadow-primary/25 transition-transform group-hover:scale-105'>
-                            <HeartPulse className='h-5 w-5' />
+                        <div className='relative flex h-9 w-9 items-center justify-center rounded-lg bg-amber-50 shadow-lg shadow-primary/25 transition-transform group-hover:scale-105'>
+                            <Image
+                                alt='Smart Clinic logo'
+                                className='object-contain'
+                                height={32}
+                                priority
+                                src='/logo.svg'
+                                width={32}
+                            />
                         </div>
-                        <span className='font-semibold text-lg tracking-tight'>PediatricCare</span>
+                        <span className='font-semibold text-lg tracking-tight'>Smart Clinic</span>
                     </Link>
 
                     {/* Desktop Nav */}

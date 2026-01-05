@@ -80,7 +80,7 @@ const BillingPage = async (props: SearchParamsProps) => {
         page,
         search: searchQuery
     });
-    const isAdmin = await checkRole('ADMIN');
+    const isAdmin = await checkRole('admin');
 
     if (!data) return null;
 

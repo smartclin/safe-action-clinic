@@ -1,4 +1,4 @@
-// import 'server-only';
+// Database configuration for Prisma
 
 import { PrismaPg } from '@prisma/adapter-pg';
 import { Pool } from 'pg';

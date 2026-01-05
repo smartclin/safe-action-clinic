@@ -12,7 +12,7 @@ export const RoleCard: React.FC<RoleCardProps> = ({ role }) => {
     return (
         <Link
             className='group relative flex h-full cursor-pointer flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white p-8 shadow-sm transition-all duration-300 ease-out hover:-translate-y-1 hover:border-brand-300 hover:shadow-xl dark:border-slate-700 dark:bg-slate-800 dark:hover:border-cyan-500'
-            href={role.href}
+            href={{ pathname: role.href }}
         >
             {/* Decorative Background Blob */}
             <div

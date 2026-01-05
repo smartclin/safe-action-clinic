@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
-import { getRoleRedirect } from '@/config/auth';
+import { getRoleRedirect } from '@/lib/routes';
 import type { Role } from '@/types/auth';
 
 import { useAuth } from './use-auth';

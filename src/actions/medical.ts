@@ -23,7 +23,7 @@ const medicalActionClient = createSafeActionClient({
     },
     defineMetadataSchema: () =>
         z.object({
-            role: z.enum(['ADMIN', 'DOCTOR', 'STAFF']).optional(),
+            role: z.enum(['admin', 'doctor', 'staff']).optional(),
             patientId: z.string().optional()
         })
 });
@@ -35,14 +35,14 @@ const DiagnosisWithAppointmentSchema = DiagnosisSchema.extend({
 
 // Add diagnosis with cache invalidation
 export const addDiagnosis = medicalActionClient
-    .metadata({ role: 'DOCTOR' }) // Only doctors can add diagnoses
+    .metadata({ role: 'doctor' }) // Only doctors can add diagnoses
     .inputSchema(DiagnosisWithAppointmentSchema)
     .action(async ({ parsedInput }) => {
         try {
             const { appointmentId, ...diagnosisData } = parsedInput;
 
             // Check if user has doctor role
-            const isDoctor = await checkRole('DOCTOR');
+            const isDoctor = await checkRole('doctor');
             if (!isDoctor) {
                 return {
                     success: false,
@@ -123,7 +123,7 @@ async function cacheDiagnosis(diagnosisId: string, date: Date) {
 
 // Patient bill creation with validation
 export const addNewBill = medicalActionClient
-    .metadata({ role: 'DOCTOR' })
+    .metadata({ role: 'doctor' })
     .inputSchema(
         PatientBillSchema.extend({
             appointmentId: z.string().min(1, 'Appointment ID is required'),
@@ -135,8 +135,8 @@ export const addNewBill = medicalActionClient
             const { billId, appointmentId, ...billData } = parsedInput;
 
             // Check authorization
-            const isAdmin = await checkRole('ADMIN');
-            const isDoctor = await checkRole('DOCTOR');
+            const isAdmin = await checkRole('admin');
+            const isDoctor = await checkRole('doctor');
 
             if (!isAdmin && !isDoctor) {
                 return {
@@ -248,7 +248,7 @@ async function updatePaymentTotal(paymentId: string) {
 
 // Generate final bill
 export const generateBill = medicalActionClient
-    .metadata({ role: 'ADMIN' }) // Only admins can generate final bills
+    .metadata({ role: 'admin' }) // Only admins can generate final bills
     .inputSchema(
         PaymentSchema.extend({
             id: z.string().min(1, 'Payment ID is required')
@@ -309,7 +309,7 @@ export const generateBill = medicalActionClient
 async function createInvoice(paymentId: string) {
     'use cache';
     cacheTag(`invoice-${paymentId}`);
-    cacheLife('months'); // Invoices are long-term records
+    cacheLife('max'); // Invoices are long-term records
 
     const invoice = await db.reminder.create({
         data: {

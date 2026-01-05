@@ -29,7 +29,7 @@ export const VitalSigns = async ({ id, patientId, doctorId }: VitalSignsProps) =
 
     const vitals = data || null;
 
-    const isPatient = await checkRole('PATIENT');
+    const isPatient = await checkRole('patient');
 
     return (
         <section id='vital-signs'>

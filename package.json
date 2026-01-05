@@ -73,6 +73,7 @@
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
     "date-fns": "^4.1.0",
+    "dotenv": "^17.2.3",
     "electron": "^39.2.7",
     "electron-builder": "^26.0.12",
     "electron-serve": "^3.0.0",
@@ -101,6 +102,7 @@
     "zod": "^4.3.4"
   },
   "devDependencies": {
+    "@better-auth/cli": "^1.4.10",
     "@biomejs/biome": "2.3.11",
     "@tailwindcss/postcss": "^4.1.18",
     "@types/node": "^25.0.3",

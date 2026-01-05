@@ -2,6 +2,7 @@ import { BriefcaseBusiness } from 'lucide-react';
 
 import { getUserList } from '@/actions/user';
 import { Table } from '@/components/tables/table';
+import type { UserRole } from '@/types';
 
 const columns = [
     {
@@ -38,14 +39,14 @@ interface UserProps {
     name: string;
     email: string;
     image: string | null;
-    role: string | null;
+    role: UserRole | null;
 }
 const UserPage = async ({ searchParams }: { searchParams: { [key: string]: string | undefined } }) => {
     const { users, pagination } = await getUserList({
         page: Number(searchParams.page) || 1,
         limit: Number(searchParams.limit) || 20,
         search: searchParams.search || '',
-        role: searchParams.role || 'patient'
+        role: searchParams.role as UserRole | undefined
     });
 
     if (!users) return null;

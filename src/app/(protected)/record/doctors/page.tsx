@@ -55,7 +55,7 @@ const DoctorsList = async (props: SearchParamsProps) => {
     });
 
     if (!data) return null;
-    const isAdmin = await checkRole('ADMIN');
+    const isAdmin = await checkRole('admin');
 
     const renderRow = (item: Doctor) => (
         <tr

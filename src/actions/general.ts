@@ -21,7 +21,7 @@ export async function deleteDataById({ id, deleteType }: { id: string; deleteTyp
         }
 
         // Check if user has admin role
-        const isAdmin = await checkRole('ADMIN');
+        const isAdmin = await checkRole('admin');
         if (!isAdmin) {
             return {
                 success: false,

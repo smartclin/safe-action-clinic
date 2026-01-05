@@ -36,7 +36,7 @@ export const AvailableDoctors = async ({ data }: DataProps) => {
             <div className='mb-6 flex items-center justify-between'>
                 <h1 className='font-semibold text-lg'>Available Doctors</h1>
 
-                {(await checkRole('ADMIN')) && (
+                {(await checkRole('admin')) && (
                     <Button
                         asChild
                         className='disabled:cursor-not-allowed disabled:text-gray-200'

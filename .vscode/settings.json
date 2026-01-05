@@ -1,44 +1,412 @@
 {
-    "[javascript][typescript][javascriptreact][typescriptreact][json][jsonc][css][graphql]": {
+    // Next.js 16 specific settings
+    "typescript.tsdk": "node_modules/typescript/lib",
+    "typescript.enablePromptUseWorkspaceTsdk": true,
+
+    // File associations
+    "files.associations": {
+        "*.css": "css",
+        "*.tsx": "typescriptreact",
+        "*.ts": "typescript",
+        "*.prisma": "prisma"
+    },
+
+    // Exclude build artifacts
+    "typescript.validate.enable": true,
+    "javascript.validate.enable": true,
+    "typescript.preferences.includePackageJsonAutoImports": "on",
+    "files.autoSave": "afterDelay",
+    "files.trimTrailingWhitespace": true,
+    "files.insertFinalNewline": true,
+    "files.trimFinalNewlines": true,
+
+    // ========== EDITOR ==========
+    "editor.formatOnSave": true,
+    "editor.formatOnPaste": false,
+    "editor.formatOnType": false,
+    "editor.codeActionsOnSave": {
+        "source.fixAll.ts": "explicit",
+        "source.addMissingImports.ts": "explicit",
+        "source.fixAll.biome": "explicit",
+        "source.removeUnusedImports": "explicit",
+        "source.fixAll.stylelint": "explicit",
+        "source.organizeImports": "explicit",
+        "source.sortImports": "explicit"
+    },
+    "editor.defaultFormatter": "biomejs.biome",
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true,
+    "editor.detectIndentation": false,
+    "editor.rulers": [80, 120],
+    "editor.wordWrap": "off",
+    "editor.bracketPairColorization.enabled": true,
+    "editor.guides.bracketPairs": "active",
+    "editor.linkedEditing": true,
+    "editor.inlineSuggest.enabled": true,
+    "editor.suggestSelection": "first",
+    "editor.snippetSuggestions": "top",
+    "editor.suggest.showStatusBar": true,
+    "editor.fontLigatures": true,
+    "editor.fontFamily": "'Cascadia Code', 'Fira Code', Consolas, 'Courier New', monospace",
+    "editor.fontSize": 14,
+    "editor.lineHeight": 1.8,
+    "editor.cursorBlinking": "smooth",
+    "editor.cursorStyle": "line",
+    "editor.accessibilitySupport": "off",
+
+    // ========== TERMINAL ==========
+    "terminal.integrated.defaultProfile.windows": "PowerShell",
+    "terminal.integrated.defaultProfile.linux": "zsh (2)",
+    "terminal.integrated.defaultProfile.osx": "zsh",
+    "terminal.integrated.fontSize": 13,
+    "terminal.integrated.cursorStyle": "line",
+    "terminal.integrated.enableMultiLinePasteWarning": "never",
+    "terminal.integrated.sendKeybindingsToShell": true,
+    "terminal.integrated.tabs.enabled": true,
+    "terminal.integrated.tabs.showActions": "singleTerminal",
+    "terminal.integrated.enableVisualBell": true,
+    // ========== TYPESCRIPT ==========
+    "typescript.updateImportsOnFileMove.enabled": "always",
+    "typescript.preferences.autoImportFileExcludePatterns": ["**/node_modules/**", "**/.next/**", "**/dist/**"],
+    "typescript.preferences.preferTypeOnlyAutoImports": true,
+    "typescript.suggest.completeFunctionCalls": true,
+    "typescript.suggest.paths": true,
+    "typescript.suggest.completeJSDocs": true,
+    "typescript.disableAutomaticTypeAcquisition": false,
+    "typescript.implementationsCodeLens.enabled": true,
+    "typescript.referencesCodeLens.enabled": true,
+    "typescript.format.enable": true,
+    "typescript.format.semicolons": "insert",
+    "typescript.format.insertSpaceAfterOpeningAndBeforeClosingEmptyBraces": false,
+    "typescript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyBraces": false,
+    "typescript.format.insertSpaceAfterTypeAssertion": false,
+    "typescript.format.placeOpenBraceOnNewLineForFunctions": false,
+    "typescript.format.placeOpenBraceOnNewLineForControlBlocks": false,
+
+    // ========== JAVASCRIPT ==========
+    "javascript.updateImportsOnFileMove.enabled": "always",
+    "javascript.preferences.includePackageJsonAutoImports": "on",
+    "javascript.suggest.completeFunctionCalls": true,
+    "javascript.suggest.paths": true,
+    "javascript.format.enable": true,
+    "javascript.format.semicolons": "insert",
+    "javascript.format.insertSpaceAfterOpeningAndBeforeClosingEmptyBraces": false,
+    "javascript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyBraces": false,
+    "javascript.format.placeOpenBraceOnNewLineForFunctions": false,
+    "javascript.format.placeOpenBraceOnNewLineForControlBlocks": false,
+    "javascript.referencesCodeLens.enabled": true,
+
+    // ========== REACT/NEXT.JS ==========
+    "emmet.includeLanguages": {
+        "javascript": "javascriptreact",
+        "typescript": "typescriptreact"
+    },
+    "emmet.triggerExpansionOnTab": true,
+    "javascript.preferences.quoteStyle": "single",
+    "typescript.preferences.quoteStyle": "single",
+    "javascript.preferences.importModuleSpecifier": "shortest",
+    "typescript.preferences.importModuleSpecifier": "shortest",
+    "javascript.preferences.importModuleSpecifierEnding": "js",
+    "typescript.preferences.importModuleSpecifierEnding": "js",
+
+    // ========== PRISMA ==========
+    "[prisma]": {
+        "editor.defaultFormatter": "Prisma.prisma",
+        "editor.formatOnSave": true,
+        "editor.suggest.showStatusBar": true,
+        "editor.quickSuggestions": {
+            "other": true,
+            "comments": false,
+            "strings": true
+        }
+    },
+
+    // ========== TAILWIND CSS ==========
+    "tailwindCSS.experimental.classRegex": [
+        ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
+        ["cn\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"]
+    ],
+    "tailwindCSS.includeLanguages": {
+        "typescript": "javascript",
+        "typescriptreact": "javascript"
+    },
+    "tailwindCSS.emmetCompletions": true,
+    "tailwindCSS.validate": true,
+    "tailwindCSS.lint.cssConflict": "warning",
+    "tailwindCSS.lint.invalidScreen": "error",
+    "tailwindCSS.lint.invalidTailwindDirective": "error",
+    "tailwindCSS.lint.invalidApply": "error",
+    "tailwindCSS.lint.invalidConfigPath": "error",
+    "tailwindCSS.lint.recommendedVariantOrder": "warning",
+    "[javascript]": {
+        "editor.defaultFormatter": "biomejs.biome"
+    },
+    "[javascriptreact]": {
+        "editor.defaultFormatter": "biomejs.biome"
+    },
+    "[typescript]": {
+        "editor.defaultFormatter": "biomejs.biome"
+    },
+    "[typescriptreact]": {
+        "editor.defaultFormatter": "biomejs.biome"
+    },
+
+    "[json]": {
         "editor.defaultFormatter": "biomejs.biome"
     },
     "[jsonc]": {
         "editor.defaultFormatter": "biomejs.biome"
     },
     "[yaml]": {
-        "editor.defaultFormatter": "redhat.vscode-yaml",
-        "editor.tabSize": 4
+        "editor.defaultFormatter": "biomejs.biome"
     },
-    "[prisma]": {
-        "editor.defaultFormatter": "Prisma.prisma",
-        "editor.codeActionsOnSave": {
-            "source.fixAll.biome": "explicit"
-        }
+    "[markdown]": {
+        "editor.defaultFormatter": "biomejs.biome"
     },
-    "github.copilot.chat.commitMessageGeneration.instructions": [
-        {
-            "file": "docs/Prisma.md"
-        }
-    ],
-    "editor.codeActionsOnSave": {
-        "source.removeUnused.ts": "explicit",
-        "source.addMissingImports.ts": "explicit",
-        "source.fixAll.biome": "explicit",
-        "source.organizeImports.biome": "explicit"
+    "[mdx]": {
+        "editor.defaultFormatter": "biomejs.biome"
     },
-    "editor.formatOnPaste": false,
-    "editor.formatOnSave": true,
-    "files.associations": {
-        "*.css": "tailwindcss"
-    },
-    "typescript.enablePromptUseWorkspaceTsdk": true,
-    "typescript.preferences.autoImportFileExcludePatterns": [
-        "lucide-react",
-        "next/router",
-        "next/dist",
-        "@radix-ui/react-*"
-    ],
 
-    "typescript.preferences.importModuleSpecifier": "non-relative",
-    "typescript.tsdk": "node_modules/typescript/lib"
+    // ========== GIT ==========
+    "git.enableSmartCommit": true,
+    "git.confirmSync": false,
+    "git.autofetch": true,
+    "git.autofetchPeriod": 180,
+    "git.ignoreRebaseWarning": true,
+    "git.openRepositoryInParentFolders": "always",
+    "git.ignoreMissingGitWarning": true,
+    "git.allowForcePush": true,
+    "git.showPushSuccessNotification": true,
+    "git.postCommitCommand": "sync",
+    "git.inputValidationLength": 72,
+    "git.inputValidationSubjectLength": 50,
+    "git.mergeEditor": false,
+
+    // ========== DEBUGGER ==========
+    "debug.javascript.autoAttachFilter": "smart",
+    "debug.openDebug": "openOnSessionStart",
+    "debug.openExplorerOnEnd": true,
+    "debug.inlineValues": "auto",
+    "debug.showInlineBreakpointCandidates": true,
+    "debug.allowBreakpointsEverywhere": true,
+    "debug.onTaskErrors": "debugAnyway",
+
+    // ========== SEARCH ==========
+    "search.exclude": {
+        "**/.next": true,
+        "**/node_modules": true,
+        "**/bun.lockb": true,
+        "**/.git": true,
+        "**/dist": true,
+        "**/build": true,
+        "**/coverage": true,
+        "**/package-lock.json": true,
+        "**/yarn.lock": true,
+        "**/pnpm-lock.yaml": true
+    },
+    "search.useIgnoreFiles": true,
+    "search.useGlobalIgnoreFiles": true,
+    "search.smartCase": true,
+    "search.showLineNumbers": true,
+    "search.collapseResults": "alwaysCollapse",
+    "search.mode": "view",
+
+    // ========== WINDOW ==========
+    "window.title": "${dirty}${activeEditorShort}${separator}${rootName}",
+    "window.commandCenter": true,
+    "window.autoDetectColorScheme": true,
+    "window.autoDetectHighContrast": true,
+    "window.menuBarVisibility": "default",
+    "window.nativeTabs": false,
+    "window.restoreWindows": "all",
+    "window.zoomLevel": 0,
+
+    // ========== WORKBENCH ==========
+    "workbench.colorTheme": "Default Light Modern",
+    "workbench.iconTheme": "material-icon-theme",
+    "workbench.preferredDarkColorTheme": "Default Dark Modern",
+    "workbench.preferredLightColorThemmonthse": "Default Light Modern",
+    "workbench.editor.enablePreviewFromQuickOpen": false,
+    "workbench.editor.labelFormat": "short",
+    "workbench.editor.showTabs": "multiple",
+    "workbench.editor.tabSizing": "shrink",
+    "workbench.editor.pinnedTabSizing": "normal",
+    "workbench.editor.splitSizing": "distribute",
+    "workbench.editor.wrapTabs": true,
+    "workbench.editor.scrollToSwitchTabs": true,
+    "workbench.editor.highlightModifiedTabs": true,
+    "workbench.startupEditor": "none",
+    "workbench.layoutControl.enabled": true,
+    "workbench.layoutControl.type": "menu",
+    "workbench.sideBar.location": "left",
+    "workbench.activityBar.location": "top",
+    "workbench.statusBar.visible": true,
+    "workbench.tips.enabled": false,
+    "workbench.tree.enableStickyScroll": true,
+    "workbench.tree.renderIndentGuides": "always",
+    "workbench.list.automaticKeyboardNavigation": true,
+    "workbench.list.mouseWheelScrollSensitivity": 1.5,
+    "workbench.list.horizontalScrolling": true,
+    "workbench.list.scrollByPage": false,
+
+    // ========== EXTENSION SPECIFIC ==========
+    // Error Lens
+    "errorLens.excludeBySource": [],
+    "errorLens.fontStyleItalic": true,
+    "errorLens.gutterIconsEnabled": true,
+    "errorLens.statusBarMessageEnabled": true,
+    "errorLens.statusBarColorsEnabled": true,
+
+    // ========== PERFORMANCE ==========
+    "editor.largeFileOptimizations": true,
+    "editor.stickyScroll.maxLineCount": 10,
+    "typescript.tsserver.useSyntaxServer": "auto",
+    "javascript.suggest.enabled": true,
+    "typescript.suggest.enabled": true,
+    "html.suggest.html5": true,
+    "css.suggest.imports": true,
+
+    // ========== EXPERIMENTAL ==========
+    // GPU acceleration settings (if on a capable machine)
+    "editor.gpuAcceleration": "on",
+    "terminal.integrated.gpuAcceleration": "on",
+
+    // Reduce automatic computation
+    "editor.occurrencesHighlight": "off",
+    "editor.selectionHighlight": false,
+    "editor.hover.enabled": true,
+    "editor.hover.delay": 500, // Reduced from default
+    "editor.hover.sticky": false,
+
+    // Optimize TypeScript/JavaScript
+    "typescript.tsserver.experimental.enableProjectDiagnostics": false, // Can be heavy
+    "typescript.tsserver.maxTsServerMemory": 6144, // Increased for Next.js
+    "typescript.tsserver.pluginPaths": [],
+    "typescript.tsserver.disableAutomaticTypeAcquisition": true, // Manual control
+
+    // Optimize file watching (critical for Next.js)
+    "files.useExperimentalFileWatcher": true,
+    "files.watcherExclude": {
+        "**/.git/**": true,
+        "**/node_modules/**": true,
+        "**/.next/**": true,
+        "**/dist/**": true,
+        "**/coverage/**": true,
+        "**/.swc/**": true,
+        "**/.turbo/**": true,
+        "**/.vercel/**": true,
+        "**/.cache/**": true
+    },
+
+    // Reduce auto-save frequency
+    "files.autoSaveDelay": 2000, // Increased from 1000ms
+
+    // ========== EDITOR OPTIMIZATIONS ==========
+    "editor.minimap.enabled": false, // Disable for performance
+    "editor.minimap.scale": 2, // If you keep it enabled
+    "editor.smoothScrolling": false, // Can cause lag
+    "editor.cursorSmoothCaretAnimation": "off",
+    "editor.stickyScroll.enabled": false, // Can be heavy in large files
+
+    // Reduce syntax highlighting load
+    "editor.semanticHighlighting.enabled": false,
+
+    // Optimize suggestions
+    "editor.quickSuggestions": {
+        "other": true,
+        "comments": false,
+        "strings": false // Changed from true
+    },
+    "editor.suggest.snippetsPreventQuickSuggestions": false,
+    "editor.suggest.showClasses": true,
+    "editor.suggest.showColors": false,
+    "editor.suggest.showConstants": false,
+    "editor.suggest.showConstructors": false,
+    "editor.suggest.showCustomcolors": false,
+    "editor.suggest.showDeprecated": false,
+    "editor.suggest.showEnumMembers": false,
+    "editor.suggest.showEnums": false,
+    "editor.suggest.showEvents": false,
+    "editor.suggest.showFields": false,
+    "editor.suggest.showFiles": false,
+    "editor.suggest.showFolders": false,
+    "editor.suggest.showFunctions": true,
+    "editor.suggest.showIcons": false,
+    "editor.suggest.showInlineDetails": true,
+    "editor.suggest.showInterfaces": true,
+    "editor.suggest.showIssues": false,
+    "editor.suggest.showKeywords": true,
+    "editor.suggest.showMethods": true,
+    "editor.suggest.showModules": false,
+    "editor.suggest.showOperators": false,
+    "editor.suggest.showProperties": true,
+    "editor.suggest.showReferences": false,
+    "editor.suggest.showSnippets": true,
+    "editor.suggest.showStructs": false,
+    "editor.suggest.showTypeParameters": false,
+    "editor.suggest.showUnits": false,
+    "editor.suggest.showUsers": false,
+    "editor.suggest.showValues": true,
+    "editor.suggest.showVariables": true,
+    "editor.suggest.showWords": false,
+
+    // ========== WORKBENCH OPTIMIZATIONS ==========
+    "workbench.tree.indent": 8, // Reduced from 12
+    "workbench.list.smoothScrolling": false,
+    "workbench.editor.enablePreview": true, // Better for memory
+    "workbench.editor.limit.enabled": true,
+    "workbench.editor.limit.value": 10,
+    "workbench.editor.limit.perEditorGroup": true,
+
+    // ========== SEARCH OPTIMIZATIONS ==========
+    "search.maxResults": 5000, // Reduced from 20000
+    "search.followSymlinks": true, // Can be faster
+
+    // ========== EXTENSION SPECIFIC ==========
+    // Error Lens - reduce frequency
+    "errorLens.messagesDelay": 500,
+    "errorLens.enabled": false, // Consider disabling for large projects
+
+    // ========== NEXT.JS SPECIFIC ==========
+    // Add Next.js file watcher exclusions
+    "files.exclude": {
+        "**/.next": true,
+        "**/node_modules": true,
+        "**/.git": true,
+        "**/.DS_Store": true,
+        "**/dist": true,
+        "**/build": true,
+        "**/.swc": true,
+        "**/.turbo": true,
+        "**/.vercel": true,
+        "**/.cache": true,
+        "**/*.log": true
+    },
+
+    // ========== TYPESCRIPT MEMORY CONFIG ==========
+    "typescript.tsserver.watchOptions": {
+        "watchFile": "useFsEvents",
+        "watchDirectory": "useFsEvents",
+        "fallbackPolling": "dynamicPriorityPolling",
+        "synchronousWatchDirectory": false,
+        "excludeDirectories": ["**/node_modules", "**/.next", "**/dist", "**/.git"]
+    },
+
+    // ========== EXPERIMENTAL (PERFORMANCE) ==========
+    "editor.experimentalWhitespaceRendering": "off", // SVG can be heavy
+    "editor.experimental.asyncTokenization": true,
+    "editor.experimental.pasteActions.enabled": false,
+
+    // ========== TERMINAL OPTIMIZATIONS ==========
+    "terminal.integrated.scrollback": 5000, // Reduced from 10000
+    "terminal.integrated.cursorBlinking": false,
+    "terminal.integrated.smoothScrolling": false,
+
+    // ========== MEMORY LIMITS ==========
+    // Add memory limits for extensions
+    "git.maxConcurrentOperations": 10,
+    "git.maxBufferSize": 2000000
+
+    // Keep your existing settings below, they're mostly good
+    // ... [your existing settings continue]
 }

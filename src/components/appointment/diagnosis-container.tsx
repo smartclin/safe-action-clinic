@@ -36,7 +36,7 @@ export const DiagnosisContainer = async ({
     });
 
     const encounter = data?.encounter || null;
-    const isPatient = await checkRole('PATIENT');
+    const isPatient = await checkRole('patient');
 
     return (
         <div>

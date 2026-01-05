@@ -4,12 +4,13 @@ import { cache } from 'react';
 
 import type { UserWhereInput } from '@/generated/models';
 import db from '@/lib/db';
+import type { UserRole } from '@/types';
 
 interface GetUserListOptions {
     page?: number;
     limit?: number;
     search?: string;
-    role: string;
+    role?: UserRole;
 }
 
 export const getUserList = cache(async (options: GetUserListOptions) => {

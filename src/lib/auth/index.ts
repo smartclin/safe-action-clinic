@@ -20,7 +20,7 @@ export const auth = betterAuth({
     emailAndPassword: {
         enabled: true
     },
-    baseURL: process.env.NEXT_PUBLIC_APP_URL,
+    baseURL: process.env.APP_URL ?? process.env.NEXT_PUBLIC_APP_URL,
     advanced: {
         database: {
             generateId: () => generateId(),
@@ -38,8 +38,8 @@ export const auth = betterAuth({
             role: {
                 type: 'string',
                 required: false,
-                defaultValue: 'patient',
-                input: false // Don't allow setting via signup
+                defaultValue: 'DOCTOR',
+                input: false
             },
             phone: {
                 type: 'string',
@@ -53,28 +53,33 @@ export const auth = betterAuth({
                 input: false
             }
         },
+        updateUser: { enabled: true },
         deleteUser: {
             enabled: true,
             beforeDelete: async user => {
-                if (user.email.includes('admin')) {
+                // Query database for additional fields
+                const fullUser = await prisma.user.findUnique({
+                    where: { id: user.id },
+                    select: { role: true, isAdmin: true }
+                });
+
+                if (fullUser?.role?.toLowerCase() === 'admin' || fullUser?.isAdmin) {
                     throw new APIError('BAD_REQUEST', {
                         message: "Admin accounts can't be deleted"
                     });
                 }
             }
         },
-
         changeEmail: {
             enabled: true
         }
     },
     session: {
-        expiresIn: 60 * 60 * 24 * 7,
-        updateAge: 60 * 60 * 24,
-
+        expiresIn: 60 * 60 * 24 * 7, // 7 days
+        updateAge: 60 * 60 * 24, // 1 day
         cookieCache: {
             enabled: true,
-            maxAge: 5 * 60 // 5 minutes - reduces database calls
+            maxAge: 5 * 60 // 5 minutes
         }
     },
     account: {
@@ -90,14 +95,15 @@ export const auth = betterAuth({
         }
     },
     rateLimit: {
-        enabled: true, // Enable rate limiting (disabled by default in development)
-        window: 60, // time window in seconds
-        max: 100, // Increased default for general API calls
+        enabled: true,
+        window: 60,
+        max: 100,
+        storage: 'memory', // Increased default for general API calls
         customRules: {
             // Allow frequent session checks (needed for client-side auth)
             '/get-session': {
                 window: 60,
-                max: 20 // Allow 20 session checks per minute (for navigation)
+                max: 60
             },
             // Rate limit for sign-in to prevent brute force and credential stuffing attacks
             '/sign-in/email': {
@@ -126,7 +132,6 @@ export const auth = betterAuth({
             create: {
                 // Fix 2: Correct the return type for database hooks
                 before: async user => {
-                    // Validate and normalize email
                     const email = user.email?.trim().toLowerCase();
                     if (!(email && EMAIL_REGEX.test(email))) {
                         throw new APIError('BAD_REQUEST', {
@@ -134,7 +139,6 @@ export const auth = betterAuth({
                         });
                     }
 
-                    // Normalize name
                     const name = user.name?.trim() || 'Unnamed User';
 
                     return {
@@ -142,8 +146,8 @@ export const auth = betterAuth({
                             ...user,
                             email,
                             name,
-                            role: 'patient', // Default role
-                            isAdminUser: false // Default admin status
+                            role: 'PATIENT', // Default to PATIENT for new registrations (use uppercase for DB enum compatibility)
+                            isAdmin: false
                         }
                     };
                 },
@@ -194,42 +198,37 @@ export const auth = betterAuth({
             }
         }),
         customSession(async ({ user, session }) => {
-            // TODO: colocar cache
-            const [userData, clinics] = await Promise.all([
-                prisma.user.findFirst({
-                    where: { id: user.id },
-                    select: {
-                        role: true
-                    }
-                }),
-                await prisma.clinic.findMany({
-                    where: {
-                        users: {
-                            some: { id: user.id }
+            const dbUser = await prisma.user.findUnique({
+                where: { id: user.id },
+                select: {
+                    role: true,
+                    clinics: {
+                        select: {
+                            id: true,
+                            name: true
                         }
-                    },
-                    select: {
-                        id: true,
-                        name: true
                     }
-                })
-            ]);
-            // TODO: Ao adaptar para o usuário ter múltiplas clínicas, deve-se mudar esse código
-            const clinic = clinics?.[0];
+                }
+            });
+
+            const primaryClinic = dbUser?.clinics[0];
+
             return {
+                ...session,
                 user: {
                     ...user,
-                    role: userData?.role,
-                    clinic: clinic?.id
+                    // Normalize role to lowercase for consistency
+                    role: dbUser?.role?.toLowerCase() ?? 'patient',
+                    clinic: primaryClinic
                         ? {
-                              id: clinic?.id,
-                              name: clinic?.name
+                              id: primaryClinic.id,
+                              name: primaryClinic.name
                           }
                         : undefined
-                },
-                session
+                }
             };
         }),
+
         nextCookies()
     ]
 });

@@ -1,14 +1,15 @@
 'use server';
 
+import type { Route } from 'next';
 import { isRedirectError } from 'next/dist/client/components/redirect-error';
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import type { z } from 'zod';
 
-import { getRoleRedirect } from '@/config/auth';
 import { auth } from '@/lib/auth';
 import { checkRateLimit, getClientIP, RATE_LIMITS } from '@/lib/auth/rate-limit';
 import prisma from '@/lib/db';
+import { getRoleRedirect } from '@/lib/routes';
 import { SignInSchema, SignUpDoctorSchema, SignUpUserSchema } from '@/schema';
 import type { ActionResponse } from '@/types/api';
 import type { Role } from '@/types/auth';
@@ -71,7 +72,16 @@ export async function signIn(values: z.infer<typeof SignInSchema>): Promise<Acti
         }
 
         // Role-based redirection
-        const redirectPath = getRoleRedirect(userWithRole.role as Role);
+        // 🟢 EDIT THIS PART:
+        let redirectPath: Route;
+
+        if (userWithRole.role === 'ADMIN') {
+            redirectPath = '/admin'; // Force Admin to /admin
+        } else {
+            // Fallback to your existing helper
+            redirectPath = getRoleRedirect(userWithRole.role as Role) as Route;
+        }
+
         redirect(redirectPath);
     } catch (error) {
         // Let NEXT_REDIRECT errors bubble up for navigation
@@ -129,6 +139,13 @@ export async function signUpUser(
                 error: 'Failed to create account'
             };
         }
+
+        // Update user role to PATIENT (uppercase for database enum)
+        await prisma.user.update({
+            where: { id: res.user.id },
+            data: { role: 'PATIENT' },
+            select: { id: true }
+        });
 
         return {
             success: true,
@@ -198,10 +215,10 @@ export async function signUpDoctor(
             };
         }
 
-        // Update user role to PROVIDER immediately in same transaction
+        // Update user role to DOCTOR immediately in same transaction
         await prisma.user.update({
             where: { id: res.user.id },
-            data: { role: 'PROVIDER' },
+            data: { role: 'DOCTOR' },
             select: { id: true } // Only return id to minimize data transfer
         });
 
@@ -210,7 +227,7 @@ export async function signUpDoctor(
             data: { userId: res.user.id }
         };
     } catch (error) {
-        console.error('Sign up provider error:', error);
+        console.error('Sign up doctor error:', error);
 
         // Handle specific error cases
         if (error instanceof Error) {

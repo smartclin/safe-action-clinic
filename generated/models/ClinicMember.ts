@@ -409,10 +409,6 @@ export type ClinicMemberUncheckedUpdateManyWithoutClinicNestedInput = {
   deleteMany?: Prisma.ClinicMemberScalarWhereInput | Prisma.ClinicMemberScalarWhereInput[]
 }
 
-export type NullableEnumUserRoleFieldUpdateOperationsInput = {
-  set?: $Enums.UserRole | null
-}
-
 export type ClinicMemberCreateWithoutUserInput = {
   createdAt?: Date | string
   updatedAt?: Date | string

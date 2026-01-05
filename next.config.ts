@@ -50,13 +50,16 @@ const nextConfig: NextConfig = {
     cacheComponents: true,
 
     experimental: {
+        serverComponentsHmrCache: true,
         inlineCss: true,
-        staleTimes: {
-            dynamic: 30
-        },
+
         turbopackFileSystemCacheForDev: true,
         turbopackFileSystemCacheForBuild: true,
-        optimizePackageImports: ['recharts', 'lucide-react', 'motion', 'date-fns']
+        staleTimes: {
+            dynamic: 30, // 30 seconds for dynamic pages
+            static: 300 // 5 minutes for static pages
+        },
+        optimizePackageImports: ['sonner', 'recharts', 'framer-motion', 'react-icons', 'date-fns', 'lucide-react']
     },
     turbopack: {
         rules: {

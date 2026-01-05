@@ -1,0 +1,338 @@
+# Next.js 16 + Better-Auth Project Rules
+
+## Framework & Runtime
+- **Next.js Version**: 16.x (App Router only)
+- **React Version**: 19.2+
+- **Node.js**: 20.9+ (LTS)
+- **TypeScript**: 5.1.0+
+- **Runtime**: Node.js (edge runtime NOT supported in proxy)
+- **Build Tool**: Turbopack (default, no --turbopack flag needed)
+
+## Critical Next.js 16 Breaking Changes
+
+### 1. Async Request APIs (MANDATORY)
+All dynamic APIs MUST be accessed asynchronously:
+
+```typescript
+// ❌ WRONG - Synchronous access removed in Next.js 16
+export default function Page({ params, searchParams }) {
+  const id = params.id
+}
+
+// ✅ CORRECT - Always await
+export default async function Page(props: PageProps) {
+  const params = await props.params
+  const searchParams = await props.searchParams
+  const id = params.id
+}
+```
+
+**Required async APIs:**
+- `cookies()` - always await
+- `headers()` - always await
+- `draftMode()` - always await
+- `params` in layouts, pages, routes, metadata files
+- `searchParams` in pages
+- `id` in opengraph-image, twitter-image, icon, apple-icon, sitemap
+
+### 2. Middleware → Proxy Migration
+- **File**: `src/proxy.ts` (NOT `middleware.ts`)
+- **Export**: Named export `proxy` (NOT `middleware`)
+- **Runtime**: Node.js only (edge NOT supported)
+- **Config**: Export `config` object with matcher
+
+```typescript
+// ✅ CORRECT
+export async function proxy(request: NextRequest) {
+  // proxy logic
+}
+
+export const config = {
+  matcher: ['/((?!api/|_next/|_static/|_vercel|[\\w-]+\\.\\w+).*)']
+}
+```
+
+### 3. Better-Auth Integration Rules
+
+**Role Normalization:**
+- Better-Auth returns **lowercase** roles: `'admin' | 'doctor' | 'staff' | 'patient'`
+- Database stores **uppercase** roles: `'ADMIN' | 'DOCTOR' | 'STAFF' | 'PATIENT'`
+- Application layer uses **lowercase** consistently
+- Use `normalizeRole()` utility when converting between formats
+
+**Session Management:**
+- Server: Use `getSession()` from `@/lib/auth/server` (cached with React cache)
+- Client: Use `useSession()` hook from `@/components/providers/session-provider`
+- NEVER call `getSession()` in root layout (causes blocking route warning)
+- Session provider uses Better-Auth's reactive `authClient.useSession()` internally
+
+**Authentication Patterns:**
+```typescript
+// ✅ Server Component
+import { getSession } from '@/lib/auth/server'
+
+export default async function Page() {
+  const session = await getSession()
+  if (!session) redirect('/login')
+}
+
+// ✅ Client Component
+'use client'
+import { useSession } from '@/components/providers/session-provider'
+
+export default function Component() {
+  const { user, isAuthenticated, role } = useSession()
+}
+```
+
+### 4. Image Component Changes
+
+**Breaking changes:**
+- `minimumCacheTTL`: Default changed from 60s → 4 hours (14400s)
+- `imageSizes`: 16px removed from defaults
+- `qualities`: Default now `[75]` only
+- `maximumRedirects`: Default changed from unlimited → 3
+- Local images with query strings require `images.localPatterns.search` config
+
+**Deprecated:**
+- `next/legacy/image` - use `next/image`
+- `images.domains` - use `images.remotePatterns`
+
+### 5. Turbopack Configuration
+```typescript
+// ✅ CORRECT - Top-level turbopack config
+const nextConfig: NextConfig = {
+  turbopack: {
+    resolveAlias: {},
+    rules: {}
+  }
+}
+
+// ❌ WRONG - experimental.turbopack removed
+const nextConfig: NextConfig = {
+  experimental: {
+    turbopack: {} // REMOVED
+  }
+}
+```
+
+## Caching & Revalidation
+
+### New Cache APIs (Stable)
+- `cacheLife()` - no longer needs `unstable_` prefix
+- `cacheTag()` - no longer needs `unstable_` prefix
+- `revalidateTag(tag, cacheLife?)` - new signature with optional cacheLife
+- `updateTag(tag)` - NEW: immediate refresh with read-your-writes semantics
+- `refresh()` - NEW: refresh client router from Server Actions
+
+**When to use:**
+- `revalidateTag()`: Content where delay is acceptable (blog posts, docs)
+- `updateTag()`: User expects immediate feedback (forms, settings)
+- `refresh()`: Refresh client router after Server Action
+
+### Cache Components (PPR Replacement)
+```typescript
+// Enable Cache Components (replaces experimental.ppr)
+const nextConfig: NextConfig = {
+  cacheComponents: true
+}
+```
+
+## TypeScript Patterns
+
+### Type Generation
+Run `npx next typegen` to generate:
+- `PageProps<'/route/[slug]'>` - for pages
+- `LayoutProps<'/route'>` - for layouts  
+- `RouteContext<'/api/route'>` - for route handlers
+
+```typescript
+// ✅ Type-safe params and searchParams
+export default async function Page(props: PageProps<'/blog/[slug]'>) {
+  const { slug } = await props.params
+  const query = await props.searchParams
+}
+```
+
+### Better-Auth Types
+```typescript
+import type { Session, User, Role } from '@/types/auth'
+
+// Role type (lowercase)
+type Role = 'admin' | 'doctor' | 'staff' | 'patient'
+
+// Always use lowercase roles in application code
+const userRole: Role = session.user.role.toLowerCase() as Role
+```
+
+## File Structure Rules
+
+### Required Files
+- `src/proxy.ts` - Proxy (middleware replacement)
+- `src/middleware.ts` - Re-exports proxy for Next.js
+- Parallel routes MUST have `default.js` files
+
+### Naming Conventions
+- Server Components: No 'use client' directive
+- Client Components: Must have 'use client' at top
+- Server Actions: Must have 'use server' directive
+- Route handlers: `route.ts` (not `api.ts`)
+
+## Environment Variables
+
+### Server-only (no prefix)
+```typescript
+// Access directly in Server Components
+const dbUrl = process.env.DATABASE_URL
+```
+
+### Client-accessible (NEXT_PUBLIC_ prefix)
+```typescript
+// Available in Client Components
+const apiUrl = process.env.NEXT_PUBLIC_API_URL
+```
+
+### Runtime values (not bundled)
+```typescript
+import { connection } from 'next/server'
+
+export default async function Page() {
+  await connection() // Ensures runtime read
+  const config = process.env.RUNTIME_CONFIG
+}
+```
+
+## Removed Features (DO NOT USE)
+
+### Removed in Next.js 16
+- ❌ AMP support (`useAmp`, `amp` config)
+- ❌ `next lint` command (use ESLint/Biome directly)
+- ❌ Runtime config (`serverRuntimeConfig`, `publicRuntimeConfig`)
+- ❌ `devIndicators.appIsrStatus`, `buildActivity`, `buildActivityPosition`
+- ❌ `experimental.dynamicIO` (use `cacheComponents`)
+- ❌ `unstable_rootParams`
+- ❌ `middleware.ts` file (use `proxy.ts`)
+- ❌ Edge runtime in proxy
+
+### Deprecated (will be removed)
+- ⚠️ `next/legacy/image`
+- ⚠️ `images.domains`
+- ⚠️ `experimental.ppr` (use `cacheComponents`)
+
+## Performance Best Practices
+
+### Development
+- Turbopack filesystem cache: `experimental.turbopackFileSystemCacheForDev: true`
+- React Compiler: `reactCompiler: true` (stable, but increases build time)
+- Concurrent dev/build: Uses separate `.next/dev` directory
+
+### Production
+- Enable `cacheComponents` for PPR-like behavior
+- Use `cacheLife` profiles for granular cache control
+- Leverage `updateTag` for interactive features
+- Use `revalidateTag` for content that can be stale
+
+## Linting & Formatting
+
+### ESLint
+- Use flat config format (ESLint v10 ready)
+- Run `eslint` directly (not `next lint`)
+- Configure in `eslint.config.js` (not `.eslintrc`)
+
+### Biome
+- Primary formatter and linter
+- Format on save enabled
+- Auto-organize imports
+
+## Common Patterns
+
+### Route Protection (Proxy)
+```typescript
+// src/proxy.ts
+export async function proxy(request: NextRequest) {
+  const session = await getCookieCache(request)
+  const userRole = session?.user?.role?.toLowerCase() as Role | undefined
+  
+  // Check access with lowercase role
+  const hasAccess = checkRouteAccess(pathname, userRole)
+}
+```
+
+### Server Component Auth
+```typescript
+import { requireRole } from '@/lib/auth/server'
+
+export default async function AdminPage() {
+  await requireRole('admin') // lowercase
+  return <div>Admin Content</div>
+}
+```
+
+### Client Component Auth
+```typescript
+'use client'
+import { useSession } from '@/components/providers/session-provider'
+
+export default function Component() {
+  const { isAdmin, isDoctor, role } = useSession()
+  // role is lowercase: 'admin' | 'doctor' | 'staff' | 'patient'
+}
+```
+
+### Server Actions with Cache Updates
+```typescript
+'use server'
+import { updateTag } from 'next/cache'
+
+export async function updateProfile(data: Profile) {
+  await db.update(data)
+  updateTag('user-profile') // Immediate refresh
+}
+```
+
+## Debugging
+
+### Turbopack Tracing
+```bash
+# Development traces
+npx next internal trace .next/dev/trace-turbopack
+
+# Production traces  
+npx next internal trace .next/trace-turbopack
+```
+
+### Common Issues
+1. **TypeError: Cannot read properties of undefined (reading 'some')**: Routes array not defined - add defensive checks
+2. **Blocking Route warning**: Don't call `getSession()` in root layout
+3. **Role mismatch**: Ensure lowercase roles throughout application layer
+4. **Hydration errors**: Session provider should not receive initialSession prop
+
+## React 19.2 Features
+
+### Available Features
+- View Transitions: `<ViewTransition>`
+- `useEffectEvent`: Extract non-reactive logic from Effects
+- `<Activity>`: Render background activity with `display: none`
+
+## Code Quality Rules
+
+1. **Always await async APIs** (params, searchParams, cookies, headers)
+2. **Use lowercase roles** in application code
+3. **Use type helpers** from `npx next typegen`
+4. **Defensive coding** in proxy (check arrays before .some())
+5. **Separate concerns**: Server auth in layouts, client auth in components
+6. **Cache strategically**: updateTag for UX, revalidateTag for content
+7. **No blocking operations** in root layout
+8. **Export named functions** in proxy.ts (not default export)
+
+## Testing Checklist
+
+- [ ] All params/searchParams are awaited
+- [ ] Roles are lowercase in app layer
+- [ ] No getSession() in root layout
+- [ ] Proxy uses defensive checks
+- [ ] Client components use useSession()
+- [ ] Server components use getSession()
+- [ ] Cache tags are properly set
+- [ ] Environment variables use correct prefix
+- [ ] No deprecated APIs in use

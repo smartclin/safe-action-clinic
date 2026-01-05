@@ -2,6 +2,7 @@
 'use client';
 
 import { Calendar, Download, Edit, Eye, FileText, Filter, Search, Shield, User } from 'lucide-react';
+import type { Route } from 'next';
 import Link from 'next/link';
 import { useState } from 'react';
 
@@ -263,7 +264,7 @@ export function MedicalRecordsList() {
                                                     size='sm'
                                                     variant='ghost'
                                                 >
-                                                    <Link href={`/admin/medical-records/${record.id}`}>
+                                                    <Link href={`/admin/record/${record.id}` as Route}>
                                                         <Eye className='h-4 w-4' />
                                                         <span className='sr-only'>View</span>
                                                     </Link>

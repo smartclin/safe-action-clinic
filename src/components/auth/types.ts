@@ -1,8 +1,15 @@
 import type { ReactNode } from 'react';
 
-export enum UserRole {
+/**
+ * Registration role types for UI selection
+ * These match the database enum values (uppercase)
+ * Better-Auth normalizes these to lowercase in sessions
+ */
+export enum RegistrationRole {
+    ADMIN = 'ADMIN',
     PATIENT = 'PATIENT',
-    PROVIDER = 'PROVIDER'
+    DOCTOR = 'DOCTOR',
+    STAFF = 'STAFF'
 }
 
 export interface RoleFeature {
@@ -11,7 +18,7 @@ export interface RoleFeature {
 }
 
 export interface RoleOption {
-    id: UserRole;
+    id: RegistrationRole;
     title: string;
     description: string;
     href: string;
@@ -19,4 +26,13 @@ export interface RoleOption {
     visualIcon: ReactNode;
     primaryColor: string;
     buttonText: string;
+}
+
+/**
+ * Download App button configuration
+ */
+export interface DownloadAppConfig {
+    href: string;
+    label: string;
+    icon?: ReactNode;
 }
